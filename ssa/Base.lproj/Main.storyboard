@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -15,36 +15,14 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="No Tags Nearby" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qG1-zh-VtB">
-                                <frame key="frameInset" minX="81" minY="53" width="212" height="39"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Fj-xV-Dlw">
-                                <frame key="frameInset" minX="168" minY="119" width="35" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Read"/>
-                                <connections>
-                                    <action selector="readStartButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="730-Dx-buU"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9yf-hB-aGd">
-                                <frame key="frameInset" minX="171" minY="169" width="32" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Stop"/>
-                                <connections>
-                                    <action selector="readStopButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3Sr-Wp-E6w"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QJ4-DM-EQq">
-                                <frame key="frameInset" minX="49.43%" minY="63.45%" width="288" height="139"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QJ4-DM-EQq">
                                 <color key="backgroundColor" red="1" green="0.50196081400000003" blue="0.0" alpha="0.86601027397260277" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="76" id="LWM-jt-bNY"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="50"/>
                                 <state key="normal" title="SCAN">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -59,8 +37,44 @@
                                     <action selector="readButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YYg-4T-uUS"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Tags Nearby" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qG1-zh-VtB">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EsY-AL-V5c">
+                                <color key="backgroundColor" red="1" green="0.50196081400000003" blue="0.0" alpha="0.86601027399999997" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="84" id="Yq4-ms-cEb"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                <state key="normal" title="STOP">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="STOP:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DLL-Jz-FqG"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="EsY-AL-V5c" secondAttribute="bottom" constant="20" symbolic="YES" id="0Sy-H8-Dj5"/>
+                            <constraint firstItem="qG1-zh-VtB" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="6lu-4s-6jV"/>
+                            <constraint firstItem="QJ4-DM-EQq" firstAttribute="trailing" secondItem="EsY-AL-V5c" secondAttribute="trailing" id="7TK-Oj-PzZ"/>
+                            <constraint firstItem="qG1-zh-VtB" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="DGP-SL-P3n"/>
+                            <constraint firstItem="EsY-AL-V5c" firstAttribute="top" secondItem="QJ4-DM-EQq" secondAttribute="bottom" constant="8" symbolic="YES" id="IdT-Od-k5x"/>
+                            <constraint firstItem="qG1-zh-VtB" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="MeF-ei-sNY"/>
+                            <constraint firstItem="qG1-zh-VtB" firstAttribute="trailing" secondItem="QJ4-DM-EQq" secondAttribute="trailing" id="NLg-KX-pMw"/>
+                            <constraint firstItem="QJ4-DM-EQq" firstAttribute="leading" secondItem="EsY-AL-V5c" secondAttribute="leading" id="V6I-VW-AH6"/>
+                            <constraint firstItem="QJ4-DM-EQq" firstAttribute="top" secondItem="qG1-zh-VtB" secondAttribute="bottom" constant="8" symbolic="YES" id="bxx-xc-d4s"/>
+                            <constraint firstItem="qG1-zh-VtB" firstAttribute="leading" secondItem="QJ4-DM-EQq" secondAttribute="leading" id="r2c-3l-gFV"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="displayTagLabel" destination="qG1-zh-VtB" id="Iaq-jP-4xH"/>
@@ -68,7 +82,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-516" y="126"/>
+            <point key="canvasLocation" x="-517.6056338028169" y="84.375"/>
         </scene>
     </scenes>
 </document>
