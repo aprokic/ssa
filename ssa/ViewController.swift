@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController, UgiInventoryDelegate {
 
@@ -15,9 +16,12 @@ class ViewController: UIViewController, UgiInventoryDelegate {
     let db = SQLiteDB.sharedInstance
     var scanPaused = false
     var scanStopped = true
-    
     // Queue of descriptions to be read aloud
     let descriptionQueue = Queue<String>();
+    // Dictionary of RFID tags to the time it was read aloud.
+    var finishedDescriptions: [String:NSDate] = [:];
+    // Text to speech reader
+    let speechSynthesizer = AVSpeechSynthesizer()
     
     // Update UI when a tag is found
     func inventoryTagFound(_ tag: UgiTag!,
@@ -46,7 +50,7 @@ class ViewController: UIViewController, UgiInventoryDelegate {
             if let description = row["description"]{
                 // Change the label, and push it onto queue of descriptions.
                 displayTagLabel.text = description as? String
-                descriptionQueue.enqueue(value: description as! String);
+                descriptionQueue.enqueue(value: description as! String)
             }
         }
     }
@@ -68,15 +72,35 @@ class ViewController: UIViewController, UgiInventoryDelegate {
                 scanButton.setTitle("SCAN", for: .normal)
             }
         }
+        // TODO: Just testing out speech to text in the stop button for now.
+        // Text to Speech works fine (after testing it with a hard coded string)
+        // but it does not play with the RFID reader plugged in.
+        //
+        // This block of text is basically the functionality of dequeueing
+        // from the description queue and reading it outloud.
+        let nextDescription = "hello alex"//descriptionQueue.dequeue()
+        let descriptionUtter = AVSpeechUtterance(string: nextDescription)
+        speechSynthesizer.speak(descriptionUtter)
+        func setCategory(_ AVAudioSessionCategoryPlayback: String, with options: AVAudioSessionCategoryOptions=[.allowBluetoothA2DP]) {
+            speechSynthesizer.speak(descriptionUtter)
+        }
     }
 
     // Control for Read Button
     @IBAction func readButton(_ sender: UIButton) {
         let inventory: UgiInventory? = Ugi.singleton().activeInventory
+        
+        // Set scanner configuration
+        var config: UgiRfidConfiguration
+        config = UgiRfidConfiguration.config(withInventoryType: UgiInventoryTypes.UGI_INVENTORY_TYPE_LOCATE_DISTANCE)
+        config.maxPowerLevel = UgiRfidConfiguration.getMaxAllowablePowerLevel()
+        config.minPowerLevel = UgiRfidConfiguration.getMaxAllowablePowerLevel()
+        config.initialPowerLevel = UgiRfidConfiguration.getMaxAllowablePowerLevel()
+        config.soundType = UgiSoundTypes.UGI_INVENTORY_SOUNDS_NONE
+        
+        // Set button state and start scanning
         if scanStopped {
-            Ugi.singleton().startInventory(
-                self,
-                with: UgiRfidConfiguration.config(withInventoryType: UgiInventoryTypes.UGI_INVENTORY_TYPE_LOCATE_DISTANCE))
+            Ugi.singleton().startInventory(self, with: config)
             sender.setTitle("SCANNING", for: .normal)
             self.scanStopped = false
         }
