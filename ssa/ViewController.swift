@@ -20,6 +20,8 @@ class ViewController: UIViewController, UgiInventoryDelegate {
     let descriptionQueue = Queue<String>();
     // Dictionary of RFID tags to the time it was read aloud.
     var finishedDescriptions: [String:NSDate] = [:];
+    var session = AVAudioSession.sharedInstance()
+    var inSpeaker = AVAudioSessionPortBuiltInSpeaker
     // Text to speech reader
     let speechSynthesizer = AVSpeechSynthesizer()
     
@@ -70,19 +72,18 @@ class ViewController: UIViewController, UgiInventoryDelegate {
                 self.scanPaused = false
                 let scanButton = self.view.viewWithTag(1) as! UIButton
                 scanButton.setTitle("SCAN", for: .normal)
+                
+                // Speak aloud what's on the queue 
+                //***** Add this to correct part of app *****
+                let nextDescription = self.descriptionQueue.dequeue()!
+                let descriptionUtter = AVSpeechUtterance(string: nextDescription)
+                Ugi.singleton().closeConnection()
+                try! self.session.setActive(true)
+                try! self.session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: [.defaultToSpeaker])
+                try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
+                self.speechSynthesizer.speak(descriptionUtter)
+                try! self.session.setActive(false)
             }
-        }
-        // TODO: Just testing out speech to text in the stop button for now.
-        // Text to Speech works fine (after testing it with a hard coded string)
-        // but it does not play with the RFID reader plugged in.
-        //
-        // This block of text is basically the functionality of dequeueing
-        // from the description queue and reading it outloud.
-        let nextDescription = "hello alex"//descriptionQueue.dequeue()
-        let descriptionUtter = AVSpeechUtterance(string: nextDescription)
-        speechSynthesizer.speak(descriptionUtter)
-        func setCategory(_ AVAudioSessionCategoryPlayback: String, with options: AVAudioSessionCategoryOptions=[.allowBluetoothA2DP]) {
-            speechSynthesizer.speak(descriptionUtter)
         }
     }
 
@@ -100,6 +101,7 @@ class ViewController: UIViewController, UgiInventoryDelegate {
         
         // Set button state and start scanning
         if scanStopped {
+            Ugi.singleton().openConnection()
             Ugi.singleton().startInventory(self, with: config)
             sender.setTitle("SCANNING", for: .normal)
             self.scanStopped = false
