@@ -23,7 +23,6 @@ class ViewController: UIViewController, UgiInventoryDelegate {
     // Dictionary of RFID tags to the time it was read aloud.
     var finishedDescriptions: [String:NSDate] = [:];
     var session = AVAudioSession.sharedInstance()
-    var inSpeaker = AVAudioSessionPortBuiltInSpeaker
     // Text to speech reader
     let speechSynthesizer = AVSpeechSynthesizer()
     
