@@ -8,11 +8,13 @@
 
 import UIKit
 import AVFoundation
+import CoreBluetooth
 
 class ViewController: UIViewController, UgiInventoryDelegate {
 
     // Variables
     @IBOutlet weak var displayTagLabel: UILabel!
+    @IBOutlet weak var batteryCapacityLabel: UILabel!
     let db = SQLiteDB.sharedInstance
     var scanPaused = false
     var scanStopped = true
@@ -28,7 +30,6 @@ class ViewController: UIViewController, UgiInventoryDelegate {
     // Update UI when a tag is found
     func inventoryTagFound(_ tag: UgiTag!,
                            withDetailedPerReadData detailedPerReadData: [UgiDetailedPerReadData]?) {
-        //let rfid = inventory!.tags.first!.epc.toString()
         let rfid = tag.epc.toString()
         
         // declare index ranges for hex RFID string
@@ -53,6 +54,28 @@ class ViewController: UIViewController, UgiInventoryDelegate {
                 // Change the label, and push it onto queue of descriptions.
                 displayTagLabel.text = description as? String
                 descriptionQueue.enqueue(value: description as! String)
+                let descriptionUtter = AVSpeechUtterance(string: descriptionQueue.dequeue()!)
+
+                // ********************************************
+                // ****** SCROLL AVAILABLE OUTPUT ROUTES ******
+                let currentRoute = self.session.currentRoute
+                for route in currentRoute.outputs {
+                    sleep(2)
+                    batteryCapacityLabel.text = route.portType
+                }
+                // ********************************************
+                // ********************************************
+                
+                // ******* DOESN'T SEEM TO BE NECESSARY *******
+                //try! self.session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: [.allowBluetooth, .allowBluetoothA2DP])
+                // ********************************************
+
+                try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
+                self.speechSynthesizer.speak(descriptionUtter)
+                //allow time for description to finish asynchronously before returning control to reader
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+                    try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.none)
+                })
             }
         }
     }
@@ -72,17 +95,6 @@ class ViewController: UIViewController, UgiInventoryDelegate {
                 self.scanPaused = false
                 let scanButton = self.view.viewWithTag(1) as! UIButton
                 scanButton.setTitle("SCAN", for: .normal)
-                
-                // Speak aloud what's on the queue 
-                //***** Add this to correct part of app *****
-                let nextDescription = self.descriptionQueue.dequeue()!
-                let descriptionUtter = AVSpeechUtterance(string: nextDescription)
-                Ugi.singleton().closeConnection()
-                try! self.session.setActive(true)
-                try! self.session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: [.defaultToSpeaker])
-                try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
-                self.speechSynthesizer.speak(descriptionUtter)
-                try! self.session.setActive(false)
             }
         }
     }
@@ -101,7 +113,6 @@ class ViewController: UIViewController, UgiInventoryDelegate {
         
         // Set button state and start scanning
         if scanStopped {
-            Ugi.singleton().openConnection()
             Ugi.singleton().startInventory(self, with: config)
             sender.setTitle("SCANNING", for: .normal)
             self.scanStopped = false
