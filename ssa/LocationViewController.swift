@@ -7,20 +7,24 @@
 //
 
 import UIKit
+import CoreLocation
 
-class LocationViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+class LocationViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CLLocationManagerDelegate {
 
     var locations = ["Kroger", "Meijer", "Walmart", "CVS", "UGOS"]
     
     @IBOutlet weak var locationField: UITextField!
-    var picker = UIPickerView()
+    var locationPicker = UIPickerView()
+    let locationManager = CLLocationManager()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        picker.delegate = self
-        picker.dataSource = self
-        locationField.inputView = picker
-        // Do any additional setup after loading the view.
+        locationPicker.delegate = self
+        locationPicker.dataSource = self
+        self.locationField.inputView = locationPicker;
+        locationPicker.backgroundColor = UIColor(white: 1, alpha: 1)
+        
     }
     
     // returns the number of 'columns' to display.
@@ -39,6 +43,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         locationField.text = locations[row]
+        self.view.endEditing(true)
     }
     
     func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
