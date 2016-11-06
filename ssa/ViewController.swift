@@ -14,7 +14,6 @@ class ViewController: UIViewController, UgiInventoryDelegate {
 
     // Variables
     @IBOutlet weak var displayTagLabel: UILabel!
-    @IBOutlet weak var batteryCapacityLabel: UILabel!
     let db = SQLiteDB.sharedInstance
     var scanPaused = false
     var scanStopped = true
@@ -57,12 +56,10 @@ class ViewController: UIViewController, UgiInventoryDelegate {
 
                 // ********************************************
                 // ****** SCROLL AVAILABLE OUTPUT ROUTES ******
-                let currentRoute = self.session.currentRoute
+                /*let currentRoute = self.session.currentRoute
                 for route in currentRoute.outputs {
                     sleep(2)
-                    batteryCapacityLabel.text = route.portType
-                }
-                // ********************************************
+                }*/
                 // ********************************************
                 
                 // ******* DOESN'T SEEM TO BE NECESSARY *******
