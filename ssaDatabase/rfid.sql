@@ -28,17 +28,19 @@ create table tags (
 	primary key(type, location, description, reserved),
 	foreign key(location) references locations(lid),
 	foreign key(location, description) references descriptions(lid, did)
-); 
+
+);
 
 --if type is not item (tid=0) price must be null
 --if type is item (tid=1) price may or may not be null
-/*
+
 create trigger insert_trigger before insert on tags
 begin
 select case
 when (not(new.type = cast(1 as binary(10)) or (new.type = cast(0 as binary(10)) and null in (
  	select d.price from descriptions d, tags t where d.lid = t.location and d.did = t.description))))
 then raise(abort, 'tag type mismatch')
+
 end;
 end;
 
@@ -48,6 +50,6 @@ select case
 when (not(new.type = cast(1 as binary(10)) or (new.type = cast(0 as binary(10)) and null in (
  	select d.price from descriptions d, tags t where d.lid = t.location and d.did = t.description))))
 then raise(abort, 'tag type mismatch')
+
 end;
-*/
 end;
