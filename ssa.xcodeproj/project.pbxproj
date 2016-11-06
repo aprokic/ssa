@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		113E7AC91DC2E4E30072B7A6 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E7AC81DC2E4E30072B7A6 /* SecondViewController.swift */; };
+		113E7ACB1DC3A0EA0072B7A6 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E7ACA1DC3A0EA0072B7A6 /* HomeViewController.swift */; };
+		113E7ACD1DC507FC0072B7A6 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E7ACC1DC507FC0072B7A6 /* LocationViewController.swift */; };
 		9F1191811DAC92D200410CFC /* UGrokItApiResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9F1191801DAC92D200410CFC /* UGrokItApiResources.bundle */; };
 		9F1191821DAC92D200410CFC /* UGrokItApiResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9F1191801DAC92D200410CFC /* UGrokItApiResources.bundle */; };
 		9F1191831DAC92D200410CFC /* UGrokItApiResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9F1191801DAC92D200410CFC /* UGrokItApiResources.bundle */; };
@@ -48,6 +51,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		113E7AC81DC2E4E30072B7A6 /* SecondViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		113E7ACA1DC3A0EA0072B7A6 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		113E7ACC1DC507FC0072B7A6 /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		9F11917E1DAC8F1200410CFC /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		9F1191801DAC92D200410CFC /* UGrokItApiResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = UGrokItApiResources.bundle; path = ../UGrokItApiResources.bundle; sourceTree = "<group>"; };
 		9F1191841DAC92E900410CFC /* libUGrokItApi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUGrokItApi.a; path = ../libUGrokItApi.a; sourceTree = "<group>"; };
@@ -148,9 +154,12 @@
 				9FB8C8361DAA912C00AC6A57 /* AppDelegate.swift */,
 				9FB8C8381DAA912C00AC6A57 /* ViewController.swift */,
 				9FB8C83A1DAA912C00AC6A57 /* Main.storyboard */,
+				113E7AC81DC2E4E30072B7A6 /* SecondViewController.swift */,
 				9FB8C83D1DAA912C00AC6A57 /* Assets.xcassets */,
 				9FB8C83F1DAA912C00AC6A57 /* LaunchScreen.storyboard */,
 				9FB8C8421DAA912C00AC6A57 /* Info.plist */,
+				113E7ACA1DC3A0EA0072B7A6 /* HomeViewController.swift */,
+				113E7ACC1DC507FC0072B7A6 /* LocationViewController.swift */,
 			);
 			path = ssa;
 			sourceTree = "<group>";
@@ -241,7 +250,7 @@
 				TargetAttributes = {
 					9FB8C8321DAA912C00AC6A57 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = ZRSPS86XZA;
+						DevelopmentTeam = T52YGY8GH7;
 						ProvisioningStyle = Automatic;
 					};
 					9FB8C8461DAA912C00AC6A57 = {
@@ -315,7 +324,10 @@
 				9FEB70291DB3EE2200B714BB /* String-Extras.swift in Sources */,
 				FB19D9A21DB69A6F00056295 /* Queue.swift in Sources */,
 				9FEB70271DB3EE2200B714BB /* SQLiteDB.swift in Sources */,
+				113E7ACB1DC3A0EA0072B7A6 /* HomeViewController.swift in Sources */,
 				9FEB70281DB3EE2200B714BB /* SQLTable.swift in Sources */,
+				113E7AC91DC2E4E30072B7A6 /* SecondViewController.swift in Sources */,
+				113E7ACD1DC507FC0072B7A6 /* LocationViewController.swift in Sources */,
 				9FB8C8391DAA912C00AC6A57 /* ViewController.swift in Sources */,
 				9FB8C8371DAA912C00AC6A57 /* AppDelegate.swift in Sources */,
 			);
@@ -471,13 +483,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = ZRSPS86XZA;
+				DEVELOPMENT_TEAM = T52YGY8GH7;
 				INFOPLIST_FILE = ssa/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/..";
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.eecs481.ssa;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.eecs481-NOOR.ssa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = ../include/UgiSwiftBridgingHeader.h;
 				SWIFT_VERSION = 3.0;
@@ -489,13 +501,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = ZRSPS86XZA;
+				DEVELOPMENT_TEAM = T52YGY8GH7;
 				INFOPLIST_FILE = ssa/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/..";
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.eecs481.ssa;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.eecs481-NOOR.ssa";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = ../include/UgiSwiftBridgingHeader.h;
 				SWIFT_VERSION = 3.0;
