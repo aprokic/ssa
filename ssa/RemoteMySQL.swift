@@ -6,19 +6,21 @@
 //  Copyright © 2016 Alexander Prokic. All rights reserved.
 //
 
+import AVFoundation
+
 struct CountryInfo {
-    var countries: Array<String?>
-    var size: Int
+    var countries = [String]()
+    var size = -1
 }
 
 struct StateInfo {
-    var states: Array<String?>
-    var size: Int
+    var states = [String]()
+    var size = -1
 }
 
 struct CityInfo {
-    var cities: Array<String?>
-    var size: Int
+    var cities = [String]()
+    var size = -1
 }
 
 struct LocationCols {
@@ -31,309 +33,407 @@ struct LocationCols {
 }
 
 struct DescriptionCols {
-    var lid: String?
-    var did: String?
-    var description: String?
-    var price: Double
+    var lid: String = ""
+    var did: String = ""
+    var description: String = ""
+    var price: Double = 0.0
 }
 
 struct TagCols {
-    var type: String?
-    var location: String?
-    var description: String?
-    var reserved: String?
+    var type: String = ""
+    var location: String = ""
+    var description: String = ""
+    var reserved: String = ""
 }
 
 struct LocationInfo {
-    var locations: Array<LocationCols>
-    var size: Int
+    var locations = [LocationCols]()
+    var size = -1
 }
 
 struct DescriptionInfo {
-    var descriptions: Array<DescriptionCols>
-    var size: Int
+    var descriptions = [DescriptionCols]()
+    var size = -1
 }
 
 struct TagInfo {
-    var tags: Array<TagsCols>
-    var size: Int
+    var tags = [TagCols]()
+    var size = -1
 }
 
 class RemoveMySQL {
-    let SERVER = "http://35.2.246.206"
+    let SERVER = "http://35.2.212.110"
 
     func getCountries() -> CountryInfo {
-        let URL_LIST_COUNTRIES = SERVER" + "/rfid/api/listcountries.php"
+        let URL_LIST_COUNTRIES = SERVER + "/rfid/api/listcountries.php"
         let requestURL = NSURL(string: URL_LIST_COUNTRIES)
-        let request = NSMutableURLRequests(URL: requestURL!)
-        request.HTTPMethod = "GET"
+        let request = NSMutableURLRequest(url: requestURL! as URL)
+        request.httpMethod = "GET"
         let getParameters = ""
-        request.HTTPBody = getParameters.dataUsingEncoding(NSUTF8StringEncoding)
+        request.httpBody = getParameters.data(using: String.Encoding.utf8)
+        
+        var resultArr: CountryInfo = CountryInfo()
+        var failed = false
 
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
 
             if error != nil {
                 print("error is \(error)")
-                return nil
+                failed = true
+                return;
             }
 
             do {
-                //converting resonse to NSDictionary
-                let myJSON =  try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers) as? NSDictionary
-                
-                //parsing the json
-                if let parseJSON = myJSON {
-                    
-                    var arr: CountryInfo
-                    
-                    //getting the json response
-                    arr.size = parseJSON["size"] as! Int
-                    for i in 0...<arr.size {
-                        arr.countries.append(parseJSON[String(i)]["country"] as! String?);
+                //converting resonse to NSDictionary
+                let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+                
+                //parsing the json
+                if let parseJSON = myJSON {
+                    
+                    //getting the json response
+                    resultArr.size = parseJSON["size"] as! Int
+                    for i in 0..<resultArr.size {
+                        if let subArray = parseJSON[String(i)] as? [[String: AnyObject]]
+                        {
+                            for item in subArray
+                            {
+                                resultArr.countries.append(item["country"] as! String);
+                            }
+                        }
+//                        resultArr.countries.append(parseJSON[String(i)]["country"] as! String?);
                     }
-                    
-                    //returning the response
-                    return arr
-                    
-                }
-            } catch {
-                print(error)
-            }
+                    
+                    //returning the response
+                    failed = false
+                    return;
+                    
+                }
+            } catch {
+                failed = true
+                print(error)
+            }
         }
         //executing the task
         task.resume()
+        if (failed) {
+            resultArr.size = -1
+        }
+        
+        return resultArr;
     }
 
     func getStates(country: String?) -> StateInfo {
-        let URL_LIST_STATES = SERVER" + "/rfid/api/liststates.php"
+        let URL_LIST_STATES = SERVER + "/rfid/api/liststates.php"
         let requestURL = NSURL(string: URL_LIST_STATES)
-        let request = NSMutableURLRequests(URL: requestURL!)
-        request.HTTPMethod = "GET"
+        let request = NSMutableURLRequest(url: requestURL! as URL)
+        request.httpMethod = "GET"
         let getParameters = "country=" + country!
-        request.HTTPBody = getParameters.dataUsingEncoding(NSUTF8StringEncoding)
-
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        request.httpBody = getParameters.data(using: String.Encoding.utf8)
+        
+        var resultArr: StateInfo = StateInfo()
+        var failed = false
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
-
+            
             if error != nil {
                 print("error is \(error)")
-                return nil
+                failed = true
+                return;
             }
-
+            
             do {
-                //converting resonse to NSDictionary
-                let myJSON =  try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers) as? NSDictionary
-                
-                //parsing the json
-                if let parseJSON = myJSON {
-                    
-                    var arr: StateInfo
-                    
-                    //getting the json response
-                    arr.size = parseJSON["size"] as! Int
-                    for i in 0...<arr.size {
-                        arr.states.append(parseJSON[String(i)]["state_province_region"] as! String?);
+                //converting resonse to NSDictionary
+                let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+                
+                //parsing the json
+                if let parseJSON = myJSON {
+                    
+                    //getting the json response
+                    resultArr.size = parseJSON["size"] as! Int
+                    for i in 0..<resultArr.size {
+                        if let subArray = parseJSON[String(i)] as? [String: AnyObject]
+                        {
+//                            for item in subArray
+//                            {
+                                resultArr.states.append(subArray["state_province_region"] as! String);
+//                            }
+                        }
+                        //arr.states.append(parseJSON[String(i)]["state_province_region"] as! String?);
                     }
-                    
-                    //returning the response
-                    return arr
-                    
-                }
-            } catch {
-                print(error)
-            }
+                    
+                    //returning the response
+                    failed = false
+                    return;
+                    
+                }
+            } catch {
+                failed = true
+                print(error)
+            }
         }
         //executing the task
         task.resume()
+        if (failed) {
+            resultArr.size = -1
+        }
+        
+        return resultArr;
+        
     }
 
     func getCities(country: String?, state: String?) -> CityInfo {
-        let URL_LIST_CITIES = SERVER" + "/rfid/api/listcities.php"
+        let URL_LIST_CITIES = SERVER + "/rfid/api/listcities.php"
         let requestURL = NSURL(string: URL_LIST_CITIES)
-        let request = NSMutableURLRequests(URL: requestURL!)
-        request.HTTPMethod = "GET"
+        let request = NSMutableURLRequest(url: requestURL! as URL)
+        request.httpMethod = "GET"
         let getParameters = "country=" + country! + "&state=" + state!
-        request.HTTPBody = getParameters.dataUsingEncoding(NSUTF8StringEncoding)
-
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        request.httpBody = getParameters.data(using: String.Encoding.utf8)
+        
+        var resultArr: CityInfo = CityInfo()
+        var failed = false
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
-
+            
             if error != nil {
                 print("error is \(error)")
-                return nil
+                failed = true
+                return;
             }
-
+            
             do {
-                //converting resonse to NSDictionary
-                let myJSON =  try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers) as? NSDictionary
-                
-                //parsing the json
-                if let parseJSON = myJSON {
-                    
-                    var arr: CityInfo
-                    
-                    //getting the json response
-                    arr.size = parseJSON["size"] as! Int
-                    for i in 0...<arr.size {
-                        arr.cities.append(parseJSON[String(i)]["city"] as! String?);
+                //converting resonse to NSDictionary
+                let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+                
+                //parsing the json
+                if let parseJSON = myJSON {
+                    
+                    //getting the json response
+                    resultArr.size = parseJSON["size"] as! Int
+                    for i in 0..<resultArr.size {
+                        if let subArray = parseJSON[String(i)] as? [String: AnyObject]
+                        {
+//                            for item in subArray
+//                            {
+                                resultArr.cities.append(subArray["city"] as! String);
+//                            }
+                        }
+                        //arr.cities.append(parseJSON[String(i)]["city"] as! String?);
                     }
-                    
-                    //returning the response
-                    return arr
-                    
-                }
-            } catch {
-                print(error)
-            }
+                    
+                    //returning the response
+                    failed = false
+                    return;
+                    
+                }
+            } catch {
+                failed = true
+                print(error)
+            }
         }
         //executing the task
         task.resume()
+        if (failed) {
+            resultArr.size = -1
+        }
+        
+        return resultArr;
     }
 
     func getLocations(country: String?, state: String?, city: String?) -> LocationInfo {
-        let URL_QUERY_LOCATIONS = SERVER" + "/rfid/api/querylocations.php"
+        let URL_QUERY_LOCATIONS = SERVER + "/rfid/api/querylocations.php"
         let requestURL = NSURL(string: URL_QUERY_LOCATIONS)
-        let request = NSMutableURLRequests(URL: requestURL!)
-        request.HTTPMethod = "GET"
+        let request = NSMutableURLRequest(url: requestURL! as URL)
+        request.httpMethod = "GET"
         let getParameters = "country=" + country! + "&state=" + state! + "&city=" + city!
-        request.HTTPBody = getParameters.dataUsingEncoding(NSUTF8StringEncoding)
-
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        request.httpBody = getParameters.data(using: String.Encoding.utf8)
+        
+        var resultArr: LocationInfo = LocationInfo()
+        var failed = false
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
-
+            
             if error != nil {
                 print("error is \(error)")
-                return nil
+                failed = true
+                return;
             }
-
+            
             do {
-                //converting resonse to NSDictionary
-                let myJSON =  try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers) as? NSDictionary
-                
-                //parsing the json
-                if let parseJSON = myJSON {
-                                       
-                    var arr: LocationInfo
-                    
-                    //getting the json response
-                    arr.size = parseJSON["size"] as! Int
-                    for i in 0...<arr.size {
-                        var loc: LocationCols
-                        loc.lid = parseJSON[String(i)]["lid"] as! String?
-                        loc.street = parseJSON[String(i)]["street"] as! String?
-                        loc.city = parseJSON[String(i)]["city"] as! String?
-                        loc.state_province_region = parseJSON[String(i)]["state_province_region"] as! String?
-                        loc.zip = parseJSON[String(i)]["zip"] as! String?
-                        loc.country = parseJSON[String(i)]["country"] as! String?
-                        arr.locations.append(loc);
+                //converting resonse to NSDictionary
+                let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+                
+                //parsing the json
+                if let parseJSON = myJSON {
+                    
+                    //getting the json response
+                    resultArr.size = parseJSON["size"] as! Int
+                    for i in 0..<resultArr.size {
+                        if let subArray = parseJSON[String(i)] as? [String: AnyObject]
+                        {
+//                            for item in subArray
+//                            {
+                                var loc: LocationCols = LocationCols()
+                                loc.lid = subArray["lid"] as! String
+                                loc.street = subArray["street"] as! String
+                                loc.city = subArray["city"] as! String
+                                loc.state_province_region = subArray["state_province_region"] as! String
+                                loc.zip = subArray["zip"] as! String
+                                loc.country = subArray["country"] as! String
+                                resultArr.locations.append(loc);
+//                            }
+                        }
+                        //arr.cities.append(parseJSON[String(i)]["city"] as! String?);
                     }
-                    
-                    //returning the response
-                    return arr
-                    
-                }
-            } catch {
-                print(error)
-            }
+                    
+                    //returning the response
+                    failed = false
+                    return;
+                    
+                }
+            } catch {
+                failed = true
+                print(error)
+            }
         }
         //executing the task
         task.resume()
+        if (failed) {
+            resultArr.size = -1
+        }
+        
+        return resultArr;
+
     }
 
     func getDescriptions(country: String?, state: String?, city: String?) -> DescriptionInfo {
-        let URL_QUERY_DESCRIPTIONS = SERVER" + "/rfid/api/querydescriptions.php"
+        let URL_QUERY_DESCRIPTIONS = SERVER + "/rfid/api/querydescriptions.php"
         let requestURL = NSURL(string: URL_QUERY_DESCRIPTIONS)
-        let request = NSMutableURLRequests(URL: requestURL!)
-        request.HTTPMethod = "GET"
+        let request = NSMutableURLRequest(url: requestURL! as URL)
+        request.httpMethod = "GET"
         let getParameters = "country=" + country! + "&state=" + state! + "&city=" + city!
-        request.HTTPBody = getParameters.dataUsingEncoding(NSUTF8StringEncoding)
-
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        request.httpBody = getParameters.data(using: String.Encoding.utf8)
+        
+        var resultArr: DescriptionInfo = DescriptionInfo()
+        var failed = false
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
-
+            
             if error != nil {
                 print("error is \(error)")
-                return nil
+                failed = true
+                return;
             }
-
+            
             do {
-                //converting resonse to NSDictionary
-                let myJSON =  try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers) as? NSDictionary
-                
-                //parsing the json
-                if let parseJSON = myJSON {
-                                                         
-                    var arr: DesciptionInfo
-                    
-                    //getting the json response
-                    arr.size = parseJSON["size"] as! Int
-                    for i in 0...<arr.size {
-                        var desc: DescriptionCols
-                        desc.lid = parseJSON[String(i)]["lid"] as! String?
-                        desc.did = parseJSON[String(i)]["did"] as! String?
-                        desc.description = parseJSON[String(i)]["description"] as! String?
-                        desc.price = parseJSON[String(i)]["price"] as! Double
-                        arr.desciptions.append(desc);
+                //converting resonse to NSDictionary
+                let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+                
+                //parsing the json
+                if let parseJSON = myJSON {
+                    
+                    //getting the json response
+                    resultArr.size = parseJSON["size"] as! Int
+                    for i in 0..<resultArr.size {
+                        if let subArray = parseJSON[String(i)] as? [String: AnyObject]
+                        {
+//                            for item in subArray
+//                            {
+                                var desc: DescriptionCols = DescriptionCols()
+                                desc.lid = subArray["lid"] as! String
+                                desc.did = subArray["did"] as! String
+                                desc.description = subArray["description"] as! String
+                                desc.price = subArray["price"] as! Double
+                                resultArr.descriptions.append(desc);
+//                            }
+                        }
+                        //arr.cities.append(parseJSON[String(i)]["city"] as! String?);
                     }
-                    
-                    //returning the response
-                    return arr
-                    
-                }
-            } catch {
-                print(error)
-            }
+                    
+                    //returning the response
+                    failed = false
+                    return;
+                    
+                }
+            } catch {
+                failed = true
+                print(error)
+            }
         }
         //executing the task
         task.resume()
+        if (failed) {
+            resultArr.size = -1
+        }
+        
+        return resultArr;
     }
 
-    func getTags(country: String?, state: String?, city: String?) -> DescriptionInfo {
-        let URL_QUERY_TAGS = SERVER" + "/rfid/api/querytags.php"
+    func getTags(country: String?, state: String?, city: String?) -> TagInfo {
+        let URL_QUERY_TAGS = SERVER + "/rfid/api/querytags.php"
         let requestURL = NSURL(string: URL_QUERY_TAGS)
-        let request = NSMutableURLRequests(URL: requestURL!)
-        request.HTTPMethod = "GET"
+        let request = NSMutableURLRequest(url: requestURL! as URL)
+        request.httpMethod = "GET"
         let getParameters = "country=" + country! + "&state=" + state! + "&city=" + city!
-        request.HTTPBody = getParameters.dataUsingEncoding(NSUTF8StringEncoding)
-
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        request.httpBody = getParameters.data(using: String.Encoding.utf8)
+        
+        var resultArr: TagInfo = TagInfo()
+        var failed = false
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
-
+            
             if error != nil {
                 print("error is \(error)")
-                return nil
+                failed = true
+                return;
             }
-
+            
             do {
-                //converting resonse to NSDictionary
-                let myJSON =  try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers) as? NSDictionary
-                
-                //parsing the json
-                if let parseJSON = myJSON {
-                                        
-                    var arr: TagInfo
-                    
-                    //getting the json response
-                    arr.size = parseJSON["size"] as! Int
-                    for i in 0...<arr.size {
-                        var tag: TagCols
-                        tag.type = parseJSON[String(i)]["type"] as! String?
-                        tag.location = parseJSON[String(i)]["location"] as! String?
-                        tag.description = parseJSON[String(i)]["description"] as! String?
-                        tag.reserved = parseJSON[String(i)]["reserved"] as! String?
-                        arr.tags.append(tag);
+                //converting resonse to NSDictionary
+                let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+                
+                //parsing the json
+                if let parseJSON = myJSON {
+                    
+                    //getting the json response
+                    resultArr.size = parseJSON["size"] as! Int
+                    for i in 0..<resultArr.size {
+                        if let subArray = parseJSON[String(i)] as? [String: AnyObject]
+                        {
+//                            for item in subArray
+//                            {
+                                var tag: TagCols = TagCols()
+                                tag.type = subArray["type"] as! String
+                                tag.location = subArray["location"] as! String
+                                tag.description = subArray["description"] as! String
+                                tag.reserved = subArray["reserved"] as! String
+                                resultArr.tags.append(tag);
+//                            }
+                        }
+                        //arr.cities.append(parseJSON[String(i)]["city"] as! String?);
                     }
-                    
-                    //returning the response
-                    return arr
-                    
-                }
-            } catch {
-                print(error)
-            }
+                    
+                    //returning the response
+                    failed = false
+                    return;
+                    
+                }
+            } catch {
+                failed = true
+                print(error)
+            }
         }
         //executing the task
         task.resume()
+        if (failed) {
+            resultArr.size = -1
+        }
+        
+        return resultArr;
     }
 }
