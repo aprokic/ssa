@@ -17,6 +17,7 @@
 		9F1191861DAC92E900410CFC /* libUGrokItApi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F1191841DAC92E900410CFC /* libUGrokItApi.a */; };
 		9F1191871DAC92E900410CFC /* libUGrokItApi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F1191841DAC92E900410CFC /* libUGrokItApi.a */; };
 		9F1191881DAC939700410CFC /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F11917E1DAC8F1200410CFC /* libz.tbd */; };
+		9F4D379A1DD77BBA0090E914 /* data.db in Resources */ = {isa = PBXBuildFile; fileRef = 9F4D37991DD77BBA0090E914 /* data.db */; };
 		9FB8C8371DAA912C00AC6A57 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB8C8361DAA912C00AC6A57 /* AppDelegate.swift */; };
 		9FB8C8391DAA912C00AC6A57 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB8C8381DAA912C00AC6A57 /* ViewController.swift */; };
 		9FB8C83C1DAA912C00AC6A57 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FB8C83A1DAA912C00AC6A57 /* Main.storyboard */; };
@@ -30,7 +31,6 @@
 		9FEB70291DB3EE2200B714BB /* String-Extras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FEB70251DB3EE2200B714BB /* String-Extras.swift */; };
 		9FEB702B1DB3EE8400B714BB /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FEB702A1DB3EE8400B714BB /* libsqlite3.tbd */; };
 		FB19D9A21DB69A6F00056295 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB19D9A11DB69A6F00056295 /* Queue.swift */; };
-		FB19D9A41DB6A22400056295 /* data.db in Resources */ = {isa = PBXBuildFile; fileRef = FB19D9A31DB69B5500056295 /* data.db */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +57,7 @@
 		9F11917E1DAC8F1200410CFC /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		9F1191801DAC92D200410CFC /* UGrokItApiResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = UGrokItApiResources.bundle; path = ../UGrokItApiResources.bundle; sourceTree = "<group>"; };
 		9F1191841DAC92E900410CFC /* libUGrokItApi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUGrokItApi.a; path = ../libUGrokItApi.a; sourceTree = "<group>"; };
+		9F4D37991DD77BBA0090E914 /* data.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = data.db; path = ssaDatabase/data.db; sourceTree = SOURCE_ROOT; };
 		9FB8C8331DAA912C00AC6A57 /* ssa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ssa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FB8C8361DAA912C00AC6A57 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9FB8C8381DAA912C00AC6A57 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -76,7 +77,6 @@
 		9FEB70251DB3EE2200B714BB /* String-Extras.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String-Extras.swift"; sourceTree = "<group>"; };
 		9FEB702A1DB3EE8400B714BB /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		FB19D9A11DB69A6F00056295 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
-		FB19D9A31DB69B5500056295 /* data.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = data.db; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,7 +123,6 @@
 		9FB8C82A1DAA912C00AC6A57 = {
 			isa = PBXGroup;
 			children = (
-				FB19D9A31DB69B5500056295 /* data.db */,
 				9F1191841DAC92E900410CFC /* libUGrokItApi.a */,
 				9F1191801DAC92D200410CFC /* UGrokItApiResources.bundle */,
 				9FB8C8351DAA912C00AC6A57 /* ssa */,
@@ -147,6 +146,7 @@
 		9FB8C8351DAA912C00AC6A57 /* ssa */ = {
 			isa = PBXGroup;
 			children = (
+				9F4D37991DD77BBA0090E914 /* data.db */,
 				FB19D9A11DB69A6F00056295 /* Queue.swift */,
 				9FEB70231DB3EE2200B714BB /* SQLiteDB.swift */,
 				9FEB70241DB3EE2200B714BB /* SQLTable.swift */,
@@ -290,9 +290,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FB19D9A41DB6A22400056295 /* data.db in Resources */,
 				9F1191811DAC92D200410CFC /* UGrokItApiResources.bundle in Resources */,
 				9FB8C8411DAA912C00AC6A57 /* LaunchScreen.storyboard in Resources */,
+				9F4D379A1DD77BBA0090E914 /* data.db in Resources */,
 				9FB8C83E1DAA912C00AC6A57 /* Assets.xcassets in Resources */,
 				9FB8C83C1DAA912C00AC6A57 /* Main.storyboard in Resources */,
 			);
