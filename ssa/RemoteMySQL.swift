@@ -61,10 +61,10 @@ struct TagInfo {
     var size = -1
 }
 
-class RemoveMySQL {
+class RemoteMySQL {
     let SERVER = "http://35.2.212.110"
 
-    func getCountries() -> CountryInfo {
+    func getCountries(callback: @escaping (CountryInfo) -> ()) {
         let URL_LIST_COUNTRIES = SERVER + "/rfid/api/listcountries.php"
         let requestURL = NSURL(string: URL_LIST_COUNTRIES)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -73,14 +73,12 @@ class RemoveMySQL {
         request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: CountryInfo = CountryInfo()
-        var failed = false
 
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
-            data, response, error in
+            (data, response, error) in
 
             if error != nil {
                 print("error is \(error)")
-                failed = true
                 return;
             }
 
@@ -94,36 +92,25 @@ class RemoveMySQL {
                     //getting the json response
                     resultArr.size = parseJSON["size"] as! Int
                     for i in 0..<resultArr.size {
-                        if let subArray = parseJSON[String(i)] as? [[String: AnyObject]]
+                        if let subArray = parseJSON[String(i)] as? [String: AnyObject]
                         {
-                            for item in subArray
-                            {
-                                resultArr.countries.append(item["country"] as! String);
-                            }
+                            resultArr.countries.append(subArray["country"] as! String);
                         }
-//                        resultArr.countries.append(parseJSON[String(i)]["country"] as! String?);
                     }
                     
                     //returning the response
-                    failed = false
-                    return;
+                    callback(resultArr);
                     
                 }
             } catch {
-                failed = true
                 print(error)
             }
         }
         //executing the task
         task.resume()
-        if (failed) {
-            resultArr.size = -1
-        }
-        
-        return resultArr;
     }
 
-    func getStates(country: String?) -> StateInfo {
+    func getStates(country: String?, callback: @escaping (StateInfo) -> ()) {
         let URL_LIST_STATES = SERVER + "/rfid/api/liststates.php"
         let requestURL = NSURL(string: URL_LIST_STATES)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -132,14 +119,12 @@ class RemoveMySQL {
         request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: StateInfo = StateInfo()
-        var failed = false
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
             
             if error != nil {
                 print("error is \(error)")
-                failed = true
                 return;
             }
             
@@ -155,35 +140,27 @@ class RemoveMySQL {
                     for i in 0..<resultArr.size {
                         if let subArray = parseJSON[String(i)] as? [String: AnyObject]
                         {
-//                            for item in subArray
-//                            {
-                                resultArr.states.append(subArray["state_province_region"] as! String);
-//                            }
+                            resultArr.states.append(subArray["state_province_region"] as! String);
                         }
-                        //arr.states.append(parseJSON[String(i)]["state_province_region"] as! String?);
                     }
                     
                     //returning the response
-                    failed = false
-                    return;
+                    callback(resultArr)
                     
                 }
             } catch {
-                failed = true
                 print(error)
             }
         }
         //executing the task
-        task.resume()
-        if (failed) {
-            resultArr.size = -1
+        task.resume();
+        var i = 0;
+        while i <= 10000000 {
+            i = i + 1
         }
-        
-        return resultArr;
-        
     }
 
-    func getCities(country: String?, state: String?) -> CityInfo {
+    func getCities(country: String?, state: String?, callback: @escaping (CityInfo) -> ()) {
         let URL_LIST_CITIES = SERVER + "/rfid/api/listcities.php"
         let requestURL = NSURL(string: URL_LIST_CITIES)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -192,14 +169,12 @@ class RemoveMySQL {
         request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: CityInfo = CityInfo()
-        var failed = false
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
             
             if error != nil {
                 print("error is \(error)")
-                failed = true
                 return;
             }
             
@@ -215,34 +190,28 @@ class RemoveMySQL {
                     for i in 0..<resultArr.size {
                         if let subArray = parseJSON[String(i)] as? [String: AnyObject]
                         {
-//                            for item in subArray
-//                            {
-                                resultArr.cities.append(subArray["city"] as! String);
-//                            }
+                            resultArr.cities.append(subArray["city"] as! String);
                         }
-                        //arr.cities.append(parseJSON[String(i)]["city"] as! String?);
                     }
                     
                     //returning the response
-                    failed = false
-                    return;
+                    callback(resultArr)
                     
                 }
             } catch {
-                failed = true
                 print(error)
             }
         }
         //executing the task
         task.resume()
-        if (failed) {
-            resultArr.size = -1
+        var i = 0;
+        while i <= 10000000 {
+            i = i + 1
         }
-        
-        return resultArr;
     }
 
-    func getLocations(country: String?, state: String?, city: String?) -> LocationInfo {
+    func getLocations(country: String?, state: String?, city: String?,
+                      callback: @escaping (LocationInfo) -> ()) {
         let URL_QUERY_LOCATIONS = SERVER + "/rfid/api/querylocations.php"
         let requestURL = NSURL(string: URL_QUERY_LOCATIONS)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -251,14 +220,12 @@ class RemoveMySQL {
         request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: LocationInfo = LocationInfo()
-        var failed = false
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
             
             if error != nil {
                 print("error is \(error)")
-                failed = true
                 return;
             }
             
@@ -274,42 +241,31 @@ class RemoveMySQL {
                     for i in 0..<resultArr.size {
                         if let subArray = parseJSON[String(i)] as? [String: AnyObject]
                         {
-//                            for item in subArray
-//                            {
-                                var loc: LocationCols = LocationCols()
-                                loc.lid = subArray["lid"] as! String
-                                loc.street = subArray["street"] as! String
-                                loc.city = subArray["city"] as! String
-                                loc.state_province_region = subArray["state_province_region"] as! String
-                                loc.zip = subArray["zip"] as! String
-                                loc.country = subArray["country"] as! String
-                                resultArr.locations.append(loc);
-//                            }
+                            var loc: LocationCols = LocationCols()
+                            loc.lid = subArray["lid"] as! String
+                            loc.street = subArray["street"] as! String
+                            loc.city = subArray["city"] as! String
+                            loc.state_province_region = subArray["state_province_region"] as! String
+                            loc.zip = subArray["zip"] as! String
+                            loc.country = subArray["country"] as! String
+                            resultArr.locations.append(loc);
                         }
-                        //arr.cities.append(parseJSON[String(i)]["city"] as! String?);
                     }
                     
                     //returning the response
-                    failed = false
-                    return;
+                    callback(resultArr)
                     
                 }
             } catch {
-                failed = true
                 print(error)
             }
         }
         //executing the task
         task.resume()
-        if (failed) {
-            resultArr.size = -1
-        }
-        
-        return resultArr;
-
     }
 
-    func getDescriptions(country: String?, state: String?, city: String?) -> DescriptionInfo {
+    func getDescriptions(country: String?, state: String?, city: String?,
+                         callback: @escaping (DescriptionInfo) -> ()) {
         let URL_QUERY_DESCRIPTIONS = SERVER + "/rfid/api/querydescriptions.php"
         let requestURL = NSURL(string: URL_QUERY_DESCRIPTIONS)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -318,14 +274,12 @@ class RemoveMySQL {
         request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: DescriptionInfo = DescriptionInfo()
-        var failed = false
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
             
             if error != nil {
                 print("error is \(error)")
-                failed = true
                 return;
             }
             
@@ -341,39 +295,26 @@ class RemoveMySQL {
                     for i in 0..<resultArr.size {
                         if let subArray = parseJSON[String(i)] as? [String: AnyObject]
                         {
-//                            for item in subArray
-//                            {
-                                var desc: DescriptionCols = DescriptionCols()
-                                desc.lid = subArray["lid"] as! String
-                                desc.did = subArray["did"] as! String
-                                desc.description = subArray["description"] as! String
-                                desc.price = subArray["price"] as! Double
-                                resultArr.descriptions.append(desc);
-//                            }
+                            var desc: DescriptionCols = DescriptionCols()
+                            desc.lid = subArray["lid"] as! String
+                            desc.did = subArray["did"] as! String
+                            desc.description = subArray["description"] as! String
+                            desc.price = subArray["price"] as! Double
+                            resultArr.descriptions.append(desc);
                         }
-                        //arr.cities.append(parseJSON[String(i)]["city"] as! String?);
                     }
                     
-                    //returning the response
-                    failed = false
-                    return;
-                    
+                    callback(resultArr)
                 }
             } catch {
-                failed = true
                 print(error)
             }
         }
         //executing the task
         task.resume()
-        if (failed) {
-            resultArr.size = -1
-        }
-        
-        return resultArr;
     }
 
-    func getTags(country: String?, state: String?, city: String?) -> TagInfo {
+    func getTags(country: String?, state: String?, city: String?, callback: @escaping (TagInfo)->()) {
         let URL_QUERY_TAGS = SERVER + "/rfid/api/querytags.php"
         let requestURL = NSURL(string: URL_QUERY_TAGS)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -382,14 +323,12 @@ class RemoveMySQL {
         request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: TagInfo = TagInfo()
-        var failed = false
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
             
             if error != nil {
                 print("error is \(error)")
-                failed = true
                 return;
             }
             
@@ -405,35 +344,23 @@ class RemoveMySQL {
                     for i in 0..<resultArr.size {
                         if let subArray = parseJSON[String(i)] as? [String: AnyObject]
                         {
-//                            for item in subArray
-//                            {
-                                var tag: TagCols = TagCols()
-                                tag.type = subArray["type"] as! String
-                                tag.location = subArray["location"] as! String
-                                tag.description = subArray["description"] as! String
-                                tag.reserved = subArray["reserved"] as! String
-                                resultArr.tags.append(tag);
-//                            }
+                            var tag: TagCols = TagCols()
+                            tag.type = subArray["type"] as! String
+                            tag.location = subArray["location"] as! String
+                            tag.description = subArray["description"] as! String
+                            tag.reserved = subArray["reserved"] as! String
+                            resultArr.tags.append(tag);
                         }
-                        //arr.cities.append(parseJSON[String(i)]["city"] as! String?);
                     }
                     
                     //returning the response
-                    failed = false
-                    return;
-                    
+                    callback(resultArr)
                 }
             } catch {
-                failed = true
                 print(error)
             }
         }
         //executing the task
         task.resume()
-        if (failed) {
-            resultArr.size = -1
-        }
-        
-        return resultArr;
     }
 }
