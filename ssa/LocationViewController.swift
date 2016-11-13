@@ -11,13 +11,112 @@ import CoreLocation
 
 class LocationViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CLLocationManagerDelegate {
     
-    var locations: [String] = ["U.S.A", "Canada", "Mexico", "Brazil", "Argentina"]
+    var locations: [String] = []
     var states: [String] = []
     var cities: [String] = []
     
     @IBOutlet weak var locationField: UITextField!
     @IBOutlet weak var stateField: UITextField!
     @IBOutlet weak var cityField: UITextField!
+    
+    @IBAction func download(_ sender: Any) {
+        if locationField.text == "" || stateField.text == "" || cityField.text == "" {
+            return;
+        } else {
+            let db = SQLiteDB.sharedInstance;
+            
+            var locInfo = LocationInfo()
+            var descInfo = DescriptionInfo()
+            var tagInfo = TagInfo()
+            
+            // Remove existing entries in local DB
+            db.query(sql: "DELETE FROM tags")
+            db.query(sql: "DELETE FROM descriptions")
+            db.query(sql: "DELETE FROM locations")
+            
+            // Query database for info
+            var mySQLDB = RemoteMySQL()
+            // Query for Locations and Insert into local DB
+            mySQLDB.getLocations(country: locationField.text, state: stateField.text, city: cityField.text,
+                               callback: { locResultStruct in
+                locInfo = locResultStruct
+                
+                // Populate locations
+                var locSQLStr = "INSERT INTO locations (lid, street, city, state_province_region, zip, country) VALUES "
+                var firstLocCol = locInfo.locations[0]
+                locSQLStr.append("('" + firstLocCol.lid! + "'")
+                locSQLStr.append(", '\(firstLocCol.street)'")
+                locSQLStr.append(", '\(firstLocCol.city)'")
+                locSQLStr.append(", '\(firstLocCol.state_province_region)'")
+                locSQLStr.append(", '\(firstLocCol.zip)'")
+                locSQLStr.append(", '\(firstLocCol.country)')")
+    
+                for i in 1 ..< locInfo.locations.count {
+                    locSQLStr.append(",('" + locInfo.locations[i].lid! + "'")
+                    locSQLStr.append(",'" + locInfo.locations[i].street! + "'")
+                    locSQLStr.append(",'" + locInfo.locations[i].city! + "'")
+                    locSQLStr.append(",'" + locInfo.locations[i].state_province_region! + "'")
+                    locSQLStr.append(",'" + locInfo.locations[i].zip! + "'")
+                    locSQLStr.append(",'" + locInfo.locations[i].country! + "')")
+                }
+                
+                db.query(sql: locSQLStr)
+            })
+            
+            // Query for Descriptions and insert into local DB
+            mySQLDB.getDescriptions(country: locationField.text, state: stateField.text, city: cityField.text,
+                                    callback: { descResultStruct in
+                descInfo = descResultStruct
+                // Populate Descriptions
+                var descSQLStr = "INSERT INTO descriptions (lid, did, description, price) VALUES "
+                var firstDescCol = descInfo.descriptions[0]
+                descSQLStr.append("('" + firstDescCol.lid + "'")
+                descSQLStr.append(", '\(firstDescCol.did)'")
+                descSQLStr.append(", '\(firstDescCol.description)'")
+                if (firstDescCol.price == nil) {
+                    descSQLStr.append(",NULL)")
+                } else {
+                    descSQLStr.append(",'\(firstDescCol.price!)')")
+                }
+                
+                for i in 1 ..< descInfo.descriptions.count {
+                    descSQLStr.append(",('" + descInfo.descriptions[i].lid + "'")
+                    descSQLStr.append(",'" + descInfo.descriptions[i].did + "'")
+                    descSQLStr.append(",'" + descInfo.descriptions[i].description + "'")
+                    if (descInfo.descriptions[i].price == nil) {
+                        descSQLStr.append(",NULL)")
+                    } else {
+                        descSQLStr.append(",'\(descInfo.descriptions[i].price!)')")
+                    }
+                }
+                
+                db.query(sql: descSQLStr)
+            })
+            
+            // Query for tags and insert into local DB
+            mySQLDB.getTags(country: locationField.text, state: stateField.text, city: cityField.text,
+                          callback: { tagResultStruct in
+                tagInfo = tagResultStruct
+                // Populate tags
+                var tagSQLStr = "INSERT INTO tags (type, location, description, reserved) VALUES "
+                var firstTagCol = tagInfo.tags[0]
+                tagSQLStr.append("('" + firstTagCol.type + "'")
+                tagSQLStr.append(", '\(firstTagCol.location)'")
+                tagSQLStr.append(", '\(firstTagCol.description)'")
+                tagSQLStr.append(", '\(firstTagCol.reserved)')")
+                
+                for i in 1 ..< tagInfo.tags.count {
+                    tagSQLStr.append(",('" + tagInfo.tags[i].type + "'")
+                    tagSQLStr.append(",'" + tagInfo.tags[i].location + "'")
+                    tagSQLStr.append(",'" + tagInfo.tags[i].description + "'")
+                    tagSQLStr.append(",'" + tagInfo.tags[i].reserved + "')")
+                }
+                
+                db.query(sql: tagSQLStr)
+            })
+
+        }
+    }
     
     var locationPicker = UIPickerView()
     let locationManager = CLLocationManager()
@@ -62,6 +161,11 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         
         locationPicker.backgroundColor = UIColor(white: 1, alpha: 1)
         
+        // query for all valid countries
+        var mySQLDB = RemoteMySQL()
+        mySQLDB.getCountries(callback: { resultStruct in
+            self.locations = resultStruct.countries
+        })
     }
     
     // returns the number of 'columns' to display.
@@ -159,12 +263,17 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         
         
         if(stateField.text == "" && locationField.text != ""){
-            states.append("Michigan")
-            states.append("Ottawa")
+            var mySQLDB = RemoteMySQL()
+            mySQLDB.getStates(country: locationField.text, callback: { resultStruct in
+                self.states = resultStruct.states
+            })
             self.stateField.fadeIn()
         }
         else if(cityField.text == "" && stateField.text != ""){
-            cities.append("Detroit")
+            var mySQLDB = RemoteMySQL()
+            mySQLDB.getCities(country: locationField.text, state: stateField.text, callback: { resultStruct in
+                self.cities = resultStruct.cities
+            })
             self.cityField.fadeIn()
         }
         

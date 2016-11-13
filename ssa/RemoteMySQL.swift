@@ -36,7 +36,7 @@ struct DescriptionCols {
     var lid: String = ""
     var did: String = ""
     var description: String = ""
-    var price: Double = 0.0
+    var price: Double?
 }
 
 struct TagCols {
@@ -298,7 +298,7 @@ class RemoteMySQL {
                             desc.lid = subArray["lid"] as! String
                             desc.did = subArray["did"] as! String
                             desc.description = subArray["description"] as! String
-                            desc.price = subArray["price"] as! Double
+                            desc.price = (subArray["price"] as? Double)
                             resultArr.descriptions.append(desc);
                         }
                     }
