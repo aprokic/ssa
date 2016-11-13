@@ -63,7 +63,7 @@ struct TagInfo {
 
 class RemoteMySQL {
     let SERVER = "http://35.1.190.184"
-
+    
     func getCountries(callback: @escaping (CountryInfo) -> Void) {
         let URL_LIST_COUNTRIES = SERVER + "/rfid/api/listcountries.php"
         let requestURL = NSURL(string: URL_LIST_COUNTRIES)
@@ -73,15 +73,15 @@ class RemoteMySQL {
         request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: CountryInfo = CountryInfo()
-
+        
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
             (data, response, error) in
-
+            
             if error != nil {
                 print("error is \(error)")
                 return;
             }
-
+            
             do {
                 //converting resonse to NSDictionary
                 let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
@@ -109,7 +109,7 @@ class RemoteMySQL {
         //executing the task
         task.resume()
     }
-
+    
     func getStates(country: String?, callback: @escaping (StateInfo) -> ()) {
         // percent encode the parameter string
         let parameterString = "?country=" + country!
@@ -156,7 +156,7 @@ class RemoteMySQL {
         //executing the task
         task.resume();
     }
-
+    
     func getCities(country: String?, state: String?, callback: @escaping (CityInfo) -> ()) {
         let parameterString = "?country=" + country! + "&state=" + state!
         let tempURL = SERVER + "/rfid/api/listcities.php\(parameterString)"
@@ -206,7 +206,7 @@ class RemoteMySQL {
             i = i + 1
         }
     }
-
+    
     func getLocations(country: String?, state: String?, city: String?,
                       callback: @escaping (LocationInfo) -> ()) {
         // percent encode the parameter string
@@ -261,7 +261,7 @@ class RemoteMySQL {
         //executing the task
         task.resume()
     }
-
+    
     func getDescriptions(country: String?, state: String?, city: String?,
                          callback: @escaping (DescriptionInfo) -> ()) {
         
@@ -312,7 +312,7 @@ class RemoteMySQL {
         //executing the task
         task.resume()
     }
-
+    
     func getTags(country: String?, state: String?, city: String?, callback: @escaping (TagInfo)->()) {
         
         let parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
