@@ -52,7 +52,7 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>http://35.2.212.110</key>
+			<key>http://35.1.190.184</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
 				<true/>

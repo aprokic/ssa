@@ -62,9 +62,9 @@ struct TagInfo {
 }
 
 class RemoteMySQL {
-    let SERVER = "http://35.2.212.110"
-
-    func getCountries(callback: @escaping (CountryInfo) -> ()) {
+    let SERVER = "http://35.1.190.184"
+    
+    func getCountries(callback: @escaping (CountryInfo) -> Void) {
         let URL_LIST_COUNTRIES = SERVER + "/rfid/api/listcountries.php"
         let requestURL = NSURL(string: URL_LIST_COUNTRIES)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -73,15 +73,15 @@ class RemoteMySQL {
         request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: CountryInfo = CountryInfo()
-
+        
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
             (data, response, error) in
-
+            
             if error != nil {
                 print("error is \(error)")
                 return;
             }
-
+            
             do {
                 //converting resonse to NSDictionary
                 let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
@@ -109,14 +109,15 @@ class RemoteMySQL {
         //executing the task
         task.resume()
     }
-
+    
     func getStates(country: String?, callback: @escaping (StateInfo) -> ()) {
-        let URL_LIST_STATES = SERVER + "/rfid/api/liststates.php"
-        let requestURL = NSURL(string: URL_LIST_STATES)
+        // percent encode the parameter string
+        let parameterString = "?country=" + country!
+        let tempURL = SERVER + "/rfid/api/liststates.php\(parameterString)"
+        let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
+        let requestURL = NSURL(string: encodedURL!)
         let request = NSMutableURLRequest(url: requestURL! as URL)
         request.httpMethod = "GET"
-        let getParameters = "country=" + country!
-        request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: StateInfo = StateInfo()
         
@@ -125,7 +126,7 @@ class RemoteMySQL {
             
             if error != nil {
                 print("error is \(error)")
-                return;
+                callback(resultArr)
             }
             
             do {
@@ -149,24 +150,20 @@ class RemoteMySQL {
                     
                 }
             } catch {
-                print(error)
+                callback(resultArr)
             }
         }
         //executing the task
         task.resume();
-        var i = 0;
-        while i <= 10000000 {
-            i = i + 1
-        }
     }
-
+    
     func getCities(country: String?, state: String?, callback: @escaping (CityInfo) -> ()) {
-        let URL_LIST_CITIES = SERVER + "/rfid/api/listcities.php"
-        let requestURL = NSURL(string: URL_LIST_CITIES)
+        let parameterString = "?country=" + country! + "&state=" + state!
+        let tempURL = SERVER + "/rfid/api/listcities.php\(parameterString)"
+        let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
+        let requestURL = NSURL(string: encodedURL!)
         let request = NSMutableURLRequest(url: requestURL! as URL)
         request.httpMethod = "GET"
-        let getParameters = "country=" + country! + "&state=" + state!
-        request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: CityInfo = CityInfo()
         
@@ -175,7 +172,7 @@ class RemoteMySQL {
             
             if error != nil {
                 print("error is \(error)")
-                return;
+                callback(resultArr)
             }
             
             do {
@@ -199,7 +196,7 @@ class RemoteMySQL {
                     
                 }
             } catch {
-                print(error)
+                callback(resultArr)
             }
         }
         //executing the task
@@ -209,15 +206,16 @@ class RemoteMySQL {
             i = i + 1
         }
     }
-
+    
     func getLocations(country: String?, state: String?, city: String?,
                       callback: @escaping (LocationInfo) -> ()) {
-        let URL_QUERY_LOCATIONS = SERVER + "/rfid/api/querylocations.php"
-        let requestURL = NSURL(string: URL_QUERY_LOCATIONS)
+        // percent encode the parameter string
+        let parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
+        let tempURL = SERVER + "/rfid/api/querylocations.php\(parameterString)"
+        let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
+        let requestURL = NSURL(string: encodedURL!)
         let request = NSMutableURLRequest(url: requestURL! as URL)
         request.httpMethod = "GET"
-        let getParameters = "country=" + country! + "&state=" + state! + "&city=" + city!
-        request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: LocationInfo = LocationInfo()
         
@@ -263,15 +261,16 @@ class RemoteMySQL {
         //executing the task
         task.resume()
     }
-
+    
     func getDescriptions(country: String?, state: String?, city: String?,
                          callback: @escaping (DescriptionInfo) -> ()) {
-        let URL_QUERY_DESCRIPTIONS = SERVER + "/rfid/api/querydescriptions.php"
-        let requestURL = NSURL(string: URL_QUERY_DESCRIPTIONS)
+        
+        let parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
+        let tempURL = SERVER + "/rfid/api/querydescriptions.php\(parameterString)"
+        let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
+        let requestURL = NSURL(string: encodedURL!)
         let request = NSMutableURLRequest(url: requestURL! as URL)
         request.httpMethod = "GET"
-        let getParameters = "country=" + country! + "&state=" + state! + "&city=" + city!
-        request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: DescriptionInfo = DescriptionInfo()
         
@@ -313,14 +312,15 @@ class RemoteMySQL {
         //executing the task
         task.resume()
     }
-
+    
     func getTags(country: String?, state: String?, city: String?, callback: @escaping (TagInfo)->()) {
-        let URL_QUERY_TAGS = SERVER + "/rfid/api/querytags.php"
-        let requestURL = NSURL(string: URL_QUERY_TAGS)
+        
+        let parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
+        let tempURL = SERVER + "/rfid/api/querytags.php\(parameterString)"
+        let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
+        let requestURL = NSURL(string: encodedURL!)
         let request = NSMutableURLRequest(url: requestURL! as URL)
         request.httpMethod = "GET"
-        let getParameters = "country=" + country! + "&state=" + state! + "&city=" + city!
-        request.httpBody = getParameters.data(using: String.Encoding.utf8)
         
         var resultArr: TagInfo = TagInfo()
         
