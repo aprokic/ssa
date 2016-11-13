@@ -31,6 +31,7 @@
 		9FEB70291DB3EE2200B714BB /* String-Extras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FEB70251DB3EE2200B714BB /* String-Extras.swift */; };
 		9FEB702B1DB3EE8400B714BB /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FEB702A1DB3EE8400B714BB /* libsqlite3.tbd */; };
 		FB19D9A21DB69A6F00056295 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB19D9A11DB69A6F00056295 /* Queue.swift */; };
+		FBABC15B1DD9082400BF5787 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBABC15A1DD9082400BF5787 /* UIView.swift */; };
 		FBCD80511DD6624A00504A37 /* ssaDatabase in Resources */ = {isa = PBXBuildFile; fileRef = FBCD80501DD6624A00504A37 /* ssaDatabase */; };
 		FBCD80531DD6625600504A37 /* ssaXamppHtdocs in Resources */ = {isa = PBXBuildFile; fileRef = FBCD80521DD6625600504A37 /* ssaXamppHtdocs */; };
 		FBCD80551DD6629800504A37 /* RemoteMySQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCD80541DD6629800504A37 /* RemoteMySQL.swift */; };
@@ -80,6 +81,7 @@
 		9FEB70251DB3EE2200B714BB /* String-Extras.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String-Extras.swift"; sourceTree = "<group>"; };
 		9FEB702A1DB3EE8400B714BB /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		FB19D9A11DB69A6F00056295 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
+		FBABC15A1DD9082400BF5787 /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		FBCD80501DD6624A00504A37 /* ssaDatabase */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ssaDatabase; sourceTree = "<group>"; };
 		FBCD80521DD6625600504A37 /* ssaXamppHtdocs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ssaXamppHtdocs; sourceTree = "<group>"; };
 		FBCD80541DD6629800504A37 /* RemoteMySQL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteMySQL.swift; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 		9FB8C8351DAA912C00AC6A57 /* ssa */ = {
 			isa = PBXGroup;
 			children = (
+				FBABC15A1DD9082400BF5787 /* UIView.swift */,
 				9F4D379B1DD7A09F0090E914 /* data.db */,
 				FBCD80541DD6629800504A37 /* RemoteMySQL.swift */,
 				FB19D9A11DB69A6F00056295 /* Queue.swift */,
@@ -334,6 +337,7 @@
 			files = (
 				9FEB70291DB3EE2200B714BB /* String-Extras.swift in Sources */,
 				FB19D9A21DB69A6F00056295 /* Queue.swift in Sources */,
+				FBABC15B1DD9082400BF5787 /* UIView.swift in Sources */,
 				9FEB70271DB3EE2200B714BB /* SQLiteDB.swift in Sources */,
 				113E7ACB1DC3A0EA0072B7A6 /* HomeViewController.swift in Sources */,
 				FBCD80551DD6629800504A37 /* RemoteMySQL.swift in Sources */,
