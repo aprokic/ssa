@@ -53,6 +53,7 @@ class ViewController: UIViewController, UgiInventoryDelegate {
                 displayTagLabel.text = description as? String
                 descriptionQueue.enqueue(value: description as! String)
                 let descriptionUtter = AVSpeechUtterance(string: descriptionQueue.dequeue()!)
+                
 
                 // ********************************************
                 // ****** SCROLL AVAILABLE OUTPUT ROUTES ******
