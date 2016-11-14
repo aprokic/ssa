@@ -70,7 +70,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 // Populate Descriptions
                 var descSQLStr = "INSERT INTO descriptions (lid, did, description, price) VALUES "
                 var firstDescCol = descInfo.descriptions[0]
-                descSQLStr.append("('" + firstDescCol.lid + "'")
+                descSQLStr.append("('" + firstDescCol.lid! + "'")
                 descSQLStr.append(", '\(firstDescCol.did)'")
                 descSQLStr.append(", '\(firstDescCol.description)'")
                 if (firstDescCol.price == nil) {
@@ -80,9 +80,9 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 }
                 
                 for i in 1 ..< descInfo.descriptions.count {
-                    descSQLStr.append(",('" + descInfo.descriptions[i].lid + "'")
-                    descSQLStr.append(",'" + descInfo.descriptions[i].did + "'")
-                    descSQLStr.append(",'" + descInfo.descriptions[i].description + "'")
+                    descSQLStr.append(",('" + descInfo.descriptions[i].lid! + "'")
+                    descSQLStr.append(",'" + descInfo.descriptions[i].did! + "'")
+                    descSQLStr.append(",'" + descInfo.descriptions[i].description! + "'")
                     if (descInfo.descriptions[i].price == nil) {
                         descSQLStr.append(",NULL)")
                     } else {
@@ -100,16 +100,16 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 // Populate tags
                 var tagSQLStr = "INSERT INTO tags (type, location, description, reserved) VALUES "
                 var firstTagCol = tagInfo.tags[0]
-                tagSQLStr.append("('" + firstTagCol.type + "'")
+                tagSQLStr.append("('" + firstTagCol.type! + "'")
                 tagSQLStr.append(", '\(firstTagCol.location)'")
                 tagSQLStr.append(", '\(firstTagCol.description)'")
                 tagSQLStr.append(", '\(firstTagCol.reserved)')")
                 
                 for i in 1 ..< tagInfo.tags.count {
-                    tagSQLStr.append(",('" + tagInfo.tags[i].type + "'")
-                    tagSQLStr.append(",'" + tagInfo.tags[i].location + "'")
-                    tagSQLStr.append(",'" + tagInfo.tags[i].description + "'")
-                    tagSQLStr.append(",'" + tagInfo.tags[i].reserved + "')")
+                    tagSQLStr.append(",('" + tagInfo.tags[i].type! + "'")
+                    tagSQLStr.append(",'" + tagInfo.tags[i].location! + "'")
+                    tagSQLStr.append(",'" + tagInfo.tags[i].description! + "'")
+                    tagSQLStr.append(",'" + tagInfo.tags[i].reserved! + "')")
                 }
                 
                 db.query(sql: tagSQLStr)

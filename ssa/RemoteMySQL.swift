@@ -33,17 +33,17 @@ struct LocationCols {
 }
 
 struct DescriptionCols {
-    var lid: String = ""
-    var did: String = ""
-    var description: String = ""
+    var lid: String?
+    var did: String?
+    var description: String?
     var price: Double?
 }
 
 struct TagCols {
-    var type: String = ""
-    var location: String = ""
-    var description: String = ""
-    var reserved: String = ""
+    var type: String?
+    var location: String?
+    var description: String?
+    var reserved: String?
 }
 
 struct LocationInfo {
@@ -201,10 +201,6 @@ class RemoteMySQL {
         }
         //executing the task
         task.resume()
-        var i = 0;
-        while i <= 10000000 {
-            i = i + 1
-        }
     }
     
     func getLocations(country: String?, state: String?, city: String?,
