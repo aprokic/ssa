@@ -61,10 +61,17 @@ struct TagInfo {
     var size = -1
 }
 
+struct ScanCity {
+    var country: String?
+    var state_province_region: String?
+    var city: String?
+    var size = -1
+}
+
 class RemoteMySQL {
     let SERVER = "http://35.2.151.196"
     
-    func getCountries(callback: @escaping (CountryInfo) -> Void) {
+    func getCountries(callback: @escaping (CountryInfo) -> ()) {
         let URL_LIST_COUNTRIES = SERVER + "/rfid/api/listcountries.php"
         let requestURL = NSURL(string: URL_LIST_COUNTRIES)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -347,6 +354,52 @@ class RemoteMySQL {
                             tag.reserved = subArray["reserved"] as! String
                             resultArr.tags.append(tag);
                         }
+                    }
+                    
+                    //returning the response
+                    callback(resultArr)
+                }
+            } catch {
+                print(error)
+            }
+        }
+        //executing the task
+        task.resume()
+    }
+
+    func getScanCity(type: String?, location: String?, description: String?, reserved: String?, callback: @escaping (ScanCity)->()) {
+        
+        let parameterString = "?type=" + type! + "&location=" + location! + "&description=" + description! + "&reserved=" + reserved!
+        let tempURL = SERVER + "/rfid/api/scantag.php\(parameterString)"
+        let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
+        let requestURL = NSURL(string: encodedURL!)
+        let request = NSMutableURLRequest(url: requestURL! as URL)
+        request.httpMethod = "GET"
+        
+        var resultArr: ScanCity = ScanCity()
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+            data, response, error in
+            
+            if error != nil {
+                print("error is \(error)")
+                return;
+            }
+            
+            do {
+                //converting resonse to NSDictionary
+                let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+                
+                //parsing the json
+                if let parseJSON = myJSON {
+                    
+                    //getting the json response
+                    resultArr.size = parseJSON["size"] as! Int
+                    if let subArray = parseJSON["0"] as? [String: AnyObject]
+                    {
+                        resultArr.country = subArray["country"] as! String
+                        resultArr.state_province_region = subArray["state_province_region"] as! String
+                        resultArr.city = subArray["city"] as! String
                     }
                     
                     //returning the response
