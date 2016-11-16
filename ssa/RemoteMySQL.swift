@@ -33,17 +33,17 @@ struct LocationCols {
 }
 
 struct DescriptionCols {
-    var lid: String = ""
-    var did: String = ""
-    var description: String = ""
-    var price: Double = 0.0
+    var lid: String?
+    var did: String?
+    var description: String?
+    var price: Double?
 }
 
 struct TagCols {
-    var type: String = ""
-    var location: String = ""
-    var description: String = ""
-    var reserved: String = ""
+    var type: String?
+    var location: String?
+    var description: String?
+    var reserved: String?
 }
 
 struct LocationInfo {
@@ -62,7 +62,7 @@ struct TagInfo {
 }
 
 class RemoteMySQL {
-    let SERVER = "http://35.1.190.184"
+    let SERVER = "http://35.2.151.196"
     
     func getCountries(callback: @escaping (CountryInfo) -> Void) {
         let URL_LIST_COUNTRIES = SERVER + "/rfid/api/listcountries.php"
@@ -201,10 +201,6 @@ class RemoteMySQL {
         }
         //executing the task
         task.resume()
-        var i = 0;
-        while i <= 10000000 {
-            i = i + 1
-        }
     }
     
     func getLocations(country: String?, state: String?, city: String?,
@@ -298,7 +294,7 @@ class RemoteMySQL {
                             desc.lid = subArray["lid"] as! String
                             desc.did = subArray["did"] as! String
                             desc.description = subArray["description"] as! String
-                            desc.price = subArray["price"] as! Double
+                            desc.price = (subArray["price"] as? Double)
                             resultArr.descriptions.append(desc);
                         }
                     }

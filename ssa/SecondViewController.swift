@@ -12,6 +12,10 @@ import CoreBluetooth
 
 class SecondViewController: UIViewController, UgiInventoryDelegate  {
 
+    func navigationControllerSupportedInterfaceOrientations(navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.portrait
+    }
+    
     @IBOutlet weak var TagLabel: UILabel!
     // Variables
     let db = SQLiteDB.sharedInstance
@@ -118,21 +122,6 @@ class SecondViewController: UIViewController, UgiInventoryDelegate  {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.scanner(nil)
-        var mySQL = RemoteMySQL()
-        let testCountry = "United States"
-        let testState = "Michigan"
-        let testCity = "Ann Arbor"
-        mySQL.getCountries(callback: {resultStruct in
-            print(resultStruct.size)
-        })
-        mySQL.getStates(country: testCountry, callback: { resultStruct in
-            print(resultStruct.size)
-        })
-        mySQL.getLocations(country: testCountry, state: testState, city: testCity,
-                           callback: { resultStruct in
-            print(resultStruct.size)
-        })
-        
     }
 
     override func didReceiveMemoryWarning() {
