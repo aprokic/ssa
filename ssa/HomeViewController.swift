@@ -10,6 +10,10 @@ import UIKit
 
 class HomeViewController: UIViewController,  UgiInventoryDelegate {
 
+    func navigationControllerSupportedInterfaceOrientations(navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.portrait
+    }
+    
     @IBOutlet weak var start_scanning: UIButton!
     
     override func viewDidLoad() {

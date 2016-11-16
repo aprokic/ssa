@@ -11,6 +11,10 @@ import CoreLocation
 
 class LocationViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CLLocationManagerDelegate {
     
+    func navigationControllerSupportedInterfaceOrientations(navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.portrait
+    }
+    
     var locations: [String] = []
     var states: [String] = []
     var cities: [String] = []
@@ -18,6 +22,9 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     @IBOutlet weak var locationField: UITextField!
     @IBOutlet weak var stateField: UITextField!
     @IBOutlet weak var cityField: UITextField!
+    
+    
+    @IBOutlet weak var alert_message: UILabel!
     
     @IBAction func download(_ sender: Any) {
         if locationField.text == "" || stateField.text == "" || cityField.text == "" {
@@ -116,6 +123,11 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             })
 
         }
+        
+        //Display alert message on success 
+        self.alert_message.text = "Success!"
+        self.alert_message.textColor = UIColor.green
+        
     }
     
     var locationPicker = UIPickerView()
