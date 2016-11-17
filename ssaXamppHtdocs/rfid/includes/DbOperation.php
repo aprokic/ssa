@@ -193,6 +193,18 @@ class DbOperation {
         mysqli_close($this->conn);
         return $rows;
     }
+
+    public function scanTag($type, $location, $description, $reserved) {
+        $sql = "select l.country, l.state_province_region, l.city from locations l join tags t on l.lid = t.location where t.type = '$type' and t.location = '$location' and t.description = '$description' and t.reserved = '$reserved'";
+        $result = mysqli_query($this->conn, $sql);
+        $rows = array();
+        while ($r = mysqli_fetch_assoc($result)) {
+            $rows[] = $r;
+        }
+        $rows["size"] = mysqli_num_rows($result);
+        mysqli_close($this->conn);
+        return $rows;
+    }
 }
 
 ?>
