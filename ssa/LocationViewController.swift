@@ -176,7 +176,11 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         // query for all valid countries
         var mySQLDB = RemoteMySQL()
         mySQLDB.getCountries(callback: { resultStruct in
-            self.locations = resultStruct.countries
+            if (resultStruct.size == -1) {
+                print("error found")
+            } else {
+                self.locations = resultStruct.countries
+            }
         })
     }
     

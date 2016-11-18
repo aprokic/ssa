@@ -86,6 +86,8 @@ class RemoteMySQL {
             
             if error != nil {
                 print("error is \(error)")
+                resultArr.size = -1;
+                callback(resultArr);
                 return;
             }
             
@@ -111,6 +113,9 @@ class RemoteMySQL {
                 }
             } catch {
                 print(error)
+                resultArr.size = -1;
+                callback(resultArr);
+                return;
             }
         }
         //executing the task
@@ -133,7 +138,9 @@ class RemoteMySQL {
             
             if error != nil {
                 print("error is \(error)")
+                resultArr.size = -1;
                 callback(resultArr)
+                return;
             }
             
             do {
@@ -157,7 +164,9 @@ class RemoteMySQL {
                     
                 }
             } catch {
+                resultArr.size = -1;
                 callback(resultArr)
+                return;
             }
         }
         //executing the task
@@ -179,7 +188,9 @@ class RemoteMySQL {
             
             if error != nil {
                 print("error is \(error)")
+                resultArr.size = -1;
                 callback(resultArr)
+                return;
             }
             
             do {
@@ -203,7 +214,10 @@ class RemoteMySQL {
                     
                 }
             } catch {
+                print(error);
+                resultArr.size = -1
                 callback(resultArr)
+                return;
             }
         }
         //executing the task
@@ -227,6 +241,8 @@ class RemoteMySQL {
             
             if error != nil {
                 print("error is \(error)")
+                resultArr.size = -1;
+                callback(resultArr);
                 return;
             }
             
@@ -259,6 +275,9 @@ class RemoteMySQL {
                 }
             } catch {
                 print(error)
+                resultArr.size = -1;
+                callback(resultArr);
+                return;
             }
         }
         //executing the task
@@ -282,6 +301,8 @@ class RemoteMySQL {
             
             if error != nil {
                 print("error is \(error)")
+                resultArr.size = -1;
+                callback(resultArr);
                 return;
             }
             
@@ -310,6 +331,9 @@ class RemoteMySQL {
                 }
             } catch {
                 print(error)
+                resultArr.size = -1;
+                callback(resultArr);
+                return;
             }
         }
         //executing the task
@@ -332,6 +356,8 @@ class RemoteMySQL {
             
             if error != nil {
                 print("error is \(error)")
+                resultArr.size = -1;
+                callback(resultArr);
                 return;
             }
             
@@ -361,6 +387,9 @@ class RemoteMySQL {
                 }
             } catch {
                 print(error)
+                resultArr.size = -1;
+                callback(resultArr);
+                return;
             }
         }
         //executing the task
@@ -383,6 +412,8 @@ class RemoteMySQL {
             
             if error != nil {
                 print("error is \(error)")
+                resultArr.size = -1;
+                callback(resultArr);
                 return;
             }
             
@@ -407,6 +438,9 @@ class RemoteMySQL {
                 }
             } catch {
                 print(error)
+                resultArr.size = -1;
+                callback(resultArr);
+                return;
             }
         }
         //executing the task
