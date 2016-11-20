@@ -67,84 +67,98 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 }
                 
                 db.query(sql: locSQLStr)
-            })
-            
-            // Query for Descriptions and insert into local DB
-            mySQLDB.getDescriptions(country: locationField.text, state: stateField.text, city: cityField.text,
-                                    callback: { descResultStruct in
-                descInfo = descResultStruct
-                // Populate Descriptions
-                var descSQLStr = "INSERT INTO descriptions (lid, did, description, price) VALUES "
-                if(tagInfo.size == -1) {
-                    self.alert_message.text = "Failed!"
-                    self.alert_message.textColor = UIColor.red
-                    return
-                }
-                else if (tagInfo.size == 0){
-                    self.alert_message.text = "Nothing Found."
-                    self.alert_message.textColor = UIColor.blue
-                    return
-                }
                 
-                var firstDescCol = descInfo.descriptions[0]
-                descSQLStr.append("('" + firstDescCol.lid! + "'")
-                descSQLStr.append(", '\(firstDescCol.did)'")
-                descSQLStr.append(", '\(firstDescCol.description)'")
-                if (firstDescCol.price == nil) {
-                    descSQLStr.append(",NULL)")
-                } else {
-                    descSQLStr.append(",'\(firstDescCol.price!)')")
-                }
-                
-                for i in 1 ..< descInfo.descriptions.count {
-                    descSQLStr.append(",('" + descInfo.descriptions[i].lid! + "'")
-                    descSQLStr.append(",'" + descInfo.descriptions[i].did! + "'")
-                    descSQLStr.append(",'" + descInfo.descriptions[i].description! + "'")
-                    if (descInfo.descriptions[i].price == nil) {
+                // Query for Descriptions and insert into local DB
+                mySQLDB.getDescriptions(country: self.locationField.text, state: self.stateField.text, city: self.cityField.text,
+                                        callback: { descResultStruct in
+                    descInfo = descResultStruct
+
+                    // Populate Descriptions
+                    var descSQLStr = "INSERT INTO descriptions (lid, did, description, price) VALUES "
+                    if(descInfo.size == -1) {
+                        DispatchQueue.main.async(execute: {
+                            self.alert_message.text = "Failed!"
+                            self.alert_message.textColor = UIColor.red
+                        })
+                        return
+                    }
+                    else if (descInfo.size == 0){
+                        DispatchQueue.main.async(execute: {
+                            self.alert_message.text = "Nothing Found."
+                            self.alert_message.textColor = UIColor.red
+                        })
+                        return
+                    }
+                    
+                    var firstDescCol = descInfo.descriptions[0]
+                    descSQLStr.append("('" + firstDescCol.lid! + "'")
+                    descSQLStr.append(", '\(firstDescCol.did)'")
+                    descSQLStr.append(", '\(firstDescCol.description)'")
+                    if (firstDescCol.price == nil) {
                         descSQLStr.append(",NULL)")
                     } else {
-                        descSQLStr.append(",'\(descInfo.descriptions[i].price!)')")
+                        descSQLStr.append(",'\(firstDescCol.price!)')")
                     }
-                }
-                
-                db.query(sql: descSQLStr)
-            })
+                    
+                    for i in 1 ..< descInfo.descriptions.count {
+                        descSQLStr.append(",('" + descInfo.descriptions[i].lid! + "'")
+                        descSQLStr.append(",'" + descInfo.descriptions[i].did! + "'")
+                        descSQLStr.append(",'" + descInfo.descriptions[i].description! + "'")
+                        if (descInfo.descriptions[i].price == nil) {
+                            descSQLStr.append(",NULL)")
+                        } else {
+                            descSQLStr.append(",'\(descInfo.descriptions[i].price!)')")
+                        }
+                    }
+                    
+                    db.query(sql: descSQLStr)
+                    
+                    // Query for tags and insert into local DB
+                    mySQLDB.getTags(country: self.locationField.text, state: self.stateField.text, city: self.cityField.text,
+                                    callback: { tagResultStruct in
+                        tagInfo = tagResultStruct
+                    
+                        // Populate tags
+                        var tagSQLStr = "INSERT INTO tags (type, location, description, reserved) VALUES "
+                        if(tagInfo.size == -1) {
+                            DispatchQueue.main.async(execute: {
+                                self.alert_message.text = "Failed!"
+                                self.alert_message.textColor = UIColor.red
+                            })
+                            return
+                        }
+                        else if (tagInfo.size == 0){
+                            DispatchQueue.main.async(execute: {
+                                self.alert_message.text = "Nothing Found."
+                                self.alert_message.textColor = UIColor.red
+                            })
+                            return
+                        }
+                        
+                        var firstTagCol = tagInfo.tags[0]
+                        tagSQLStr.append("('" + firstTagCol.type! + "'")
+                        tagSQLStr.append(", '\(firstTagCol.location)'")
+                        tagSQLStr.append(", '\(firstTagCol.description)'")
+                        tagSQLStr.append(", '\(firstTagCol.reserved)')")
+                        
+                        for i in 1 ..< tagInfo.tags.count {
+                            tagSQLStr.append(",('" + tagInfo.tags[i].type! + "'")
+                            tagSQLStr.append(",'" + tagInfo.tags[i].location! + "'")
+                            tagSQLStr.append(",'" + tagInfo.tags[i].description! + "'")
+                            tagSQLStr.append(",'" + tagInfo.tags[i].reserved! + "')")
+                        }
+                        
+                        db.query(sql: tagSQLStr)
+                        
+                        DispatchQueue.main.async(execute: {
+                            self.alert_message.text = "Success!"
+                            self.alert_message.textColor = UIColor.green
+                        })
+                        
+                    }) // tags
+                }) // descriptions
+            }) // locations
             
-            // Query for tags and insert into local DB
-            mySQLDB.getTags(country: locationField.text, state: stateField.text, city: cityField.text,
-                          callback: { tagResultStruct in
-                tagInfo = tagResultStruct
-                // Populate tags
-                var tagSQLStr = "INSERT INTO tags (type, location, description, reserved) VALUES "
-                if(tagInfo.size == -1) {
-                    self.alert_message.text = "Failed!"
-                    self.alert_message.textColor = UIColor.red
-                    return
-                }
-                else if (tagInfo.size == 0){
-                    self.alert_message.text = "Nothing Found."
-                    self.alert_message.textColor = UIColor.blue
-                    return
-                }
-                            
-                var firstTagCol = tagInfo.tags[0]
-                tagSQLStr.append("('" + firstTagCol.type! + "'")
-                tagSQLStr.append(", '\(firstTagCol.location)'")
-                tagSQLStr.append(", '\(firstTagCol.description)'")
-                tagSQLStr.append(", '\(firstTagCol.reserved)')")
-                
-                for i in 1 ..< tagInfo.tags.count {
-                    tagSQLStr.append(",('" + tagInfo.tags[i].type! + "'")
-                    tagSQLStr.append(",'" + tagInfo.tags[i].location! + "'")
-                    tagSQLStr.append(",'" + tagInfo.tags[i].description! + "'")
-                    tagSQLStr.append(",'" + tagInfo.tags[i].reserved! + "')")
-                }
-                
-                db.query(sql: tagSQLStr)
-                self.alert_message.text = "Success!"
-                self.alert_message.textColor = UIColor.green
-            })
-
         }
         
     }
