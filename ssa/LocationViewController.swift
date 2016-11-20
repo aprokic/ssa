@@ -318,11 +318,16 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         if(stateField.text == "" && locationField.text != ""){
             var mySQLDB = RemoteMySQL()
             mySQLDB.getStates(country: locationField.text, callback: { resultStruct in
-                self.states = resultStruct.states
+                if(resultStruct.size == 1){
+                    self.stateField.text = resultStruct.states[0]
+                }
+                else {
+                    self.states = resultStruct.states
+                }
             })
             self.stateField.fadeIn()
         }
-        else if(cityField.text == "" && stateField.text != ""){
+        if(cityField.text == "" && stateField.text != ""){
             var mySQLDB = RemoteMySQL()
             mySQLDB.getCities(country: locationField.text, state: stateField.text, callback: { resultStruct in
                 self.cities = resultStruct.cities
