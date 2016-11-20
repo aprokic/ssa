@@ -425,17 +425,24 @@ class RemoteMySQL {
                     
                     //getting the json response
                     resultArr.size = parseJSON["size"] as! Int
-                    if let subArray = parseJSON["0"] as? [String: AnyObject]
-                    {
-                        resultArr.country = subArray["country"] as! String
-                        let resultState = subArray["state_province_region"] as! String
-                        if resultState.isEmpty {
-                            resultArr.state_province_region = "Not Available"
+                    if resultArr.size == 1 {
+                        if let subArray = parseJSON["0"] as? [String: AnyObject]
+                        {
+                            resultArr.country = subArray["country"] as! String
+                            let resultState = subArray["state_province_region"] as! String
+                            if resultState.isEmpty {
+                                resultArr.state_province_region = "Not Available"
+                            }
+                            else {
+                                resultArr.state_province_region = ResultState                         
+                            }
+                            resultArr.city = subArray["city"] as! String
                         }
-                        else {
-                            resultArr.state_province_region = ResultState                         
-                        }
-                        resultArr.city = subArray["city"] as! String
+                    }
+                    else {
+                        resultArr.country = "Not Available"
+                        resultArr.state_province_region = "Not Available"
+                        resultArr.city = "Not Available"
                     }
                     
                     //returning the response
