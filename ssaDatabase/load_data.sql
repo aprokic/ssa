@@ -1,5 +1,30 @@
-insert into locations values ('000000001', '2260 Hayward', 'Ann Arbor', 'MI', '48109', 'USA');
-insert into descriptions values ('000000001', '00000001', 'DOW 1010 Entrance 1', NULL);
-insert into descriptions values ('000000001', '00000002', 'DOW 1010 Entrance 2', NULL);
+insert into locations values ('000000001', '2260 Hayward', 'Ann Arbor', 'Michigan', '48109', 'United States');
+insert into locations values ('000000002', '2300 Hayward', 'Ann Arbor', 'Michigan', '48109', 'United States');
+insert into locations values ('000000003', '4901 Evergreen', 'Dearborn', 'Michigan', '48128', 'United States');
+insert into locations values ('000000004', '411 Woody Hayes Dr', 'Columbus', 'Ohio', '43210', 'United States');
+insert into locations values ('000000005', '58 Knightsbridge', 'London', '', 'SW1X 7JT', 'United Kingdom');
+insert into locations values ('000000006', '490 Sussex Dr,', 'Ottawa', 'Ontario', 'K1N 1G8', 'Canada');
+insert into locations values ('000000007', '1095 W Pender St,', 'Vancouver', 'British Columbia', 'V6E 2M6', 'Canada');
+insert into locations values ('000000008', 'Paseo de la Reforma 305, Cuauhtémoc', 'Ciudad de México', 'CDMX', '06500', 'Mexico');
+
+insert into descriptions values ('000000001', '00000001', 'Bob and Betty Beyster Building Abbreviated as BBB Main Entrance', NULL);
+insert into descriptions values ('000000001', '00000002', 'BBB Room 1670 Entrance 1', NULL);
+insert into descriptions values ('000000002', '00000001', 'DOW 1010 Entrance 1', NULL);
+insert into descriptions values ('000000002', '00000002', 'DOW 1010 Entrance 2', NULL);
+insert into descriptions values ('000000002', '00000003', 'DOW 1006 Entrance 1', NULL);
+insert into descriptions values ('000000002', '00000004', 'DOW 1006 Entrance 2', NULL);
+insert into descriptions values ('000000002', '00000005', 'Whiteboard', NULL);
+insert into descriptions values ('000000002', '00000006', 'Projector', NULL);
+insert into descriptions values ('000000002', '00000007', 'Evacuation Plan', NULL);
+insert into descriptions values ('000000002', '00000008', 'Standard for Spatial Accessibility Beta Demonstration', NULL);
+
 insert into tags values ('00','000000001','00000001','00000');
 insert into tags values ('00','000000001','00000002','00000');
+insert into tags values ('00','000000002','00000001','00000');
+insert into tags values ('00','000000002','00000002','00000');
+insert into tags values ('00','000000002','00000003','00000');
+insert into tags values ('00','000000002','00000004','00000');
+insert into tags values ('00','000000002','00000005','00000');
+insert into tags values ('00','000000002','00000006','00000');
+insert into tags values ('00','000000002','00000007','00000');
+insert into tags values ('00','000000002','00000008','00000');
