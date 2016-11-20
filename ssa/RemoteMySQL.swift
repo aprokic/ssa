@@ -434,7 +434,7 @@ class RemoteMySQL {
                                 resultArr.state_province_region = "Not Applicable"
                             }
                             else {
-                                resultArr.state_province_region = ResultState                         
+                                resultArr.state_province_region = resultState                         
                             }
                             resultArr.city = subArray["city"] as! String
                         }
