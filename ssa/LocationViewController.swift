@@ -11,10 +11,6 @@ import CoreLocation
 
 class LocationViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CLLocationManagerDelegate {
     
-    func navigationControllerSupportedInterfaceOrientations(navigationController: UINavigationController) -> UIInterfaceOrientationMask {
-        return UIInterfaceOrientationMask.portrait
-    }
-    
     var locations: [String] = []
     var states: [String] = []
     var cities: [String] = []
@@ -23,6 +19,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     @IBOutlet weak var stateField: UITextField!
     @IBOutlet weak var cityField: UITextField!
     
+    @IBOutlet weak var download_button: UIButton!
     
     @IBOutlet weak var alert_message: UILabel!
     
@@ -30,6 +27,8 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         if locationField.text == "" || stateField.text == "" || cityField.text == "" {
             return;
         } else {
+            self.alert_message.text = "Downloading..."
+            self.alert_message.textColor = UIColor.blue
             let db = SQLiteDB.sharedInstance;
             
             var locInfo = LocationInfo()
@@ -76,6 +75,17 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 descInfo = descResultStruct
                 // Populate Descriptions
                 var descSQLStr = "INSERT INTO descriptions (lid, did, description, price) VALUES "
+                if(tagInfo.size == -1) {
+                    self.alert_message.text = "Failed!"
+                    self.alert_message.textColor = UIColor.red
+                    return
+                }
+                else if (tagInfo.size == 0){
+                    self.alert_message.text = "Nothing Found."
+                    self.alert_message.textColor = UIColor.blue
+                    return
+                }
+                
                 var firstDescCol = descInfo.descriptions[0]
                 descSQLStr.append("('" + firstDescCol.lid! + "'")
                 descSQLStr.append(", '\(firstDescCol.did)'")
@@ -106,6 +116,17 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 tagInfo = tagResultStruct
                 // Populate tags
                 var tagSQLStr = "INSERT INTO tags (type, location, description, reserved) VALUES "
+                if(tagInfo.size == -1) {
+                    self.alert_message.text = "Failed!"
+                    self.alert_message.textColor = UIColor.red
+                    return
+                }
+                else if (tagInfo.size == 0){
+                    self.alert_message.text = "Nothing Found."
+                    self.alert_message.textColor = UIColor.blue
+                    return
+                }
+                            
                 var firstTagCol = tagInfo.tags[0]
                 tagSQLStr.append("('" + firstTagCol.type! + "'")
                 tagSQLStr.append(", '\(firstTagCol.location)'")
@@ -120,13 +141,11 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 }
                 
                 db.query(sql: tagSQLStr)
+                self.alert_message.text = "Success!"
+                self.alert_message.textColor = UIColor.green
             })
 
         }
-        
-        //Display alert message on success 
-        self.alert_message.text = "Success!"
-        self.alert_message.textColor = UIColor.green
         
     }
     
@@ -140,6 +159,9 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        download_button.isHidden = true
+        
         locationPicker.delegate = self
         locationPicker.dataSource = self
         locationPicker.showsSelectionIndicator = true
@@ -179,6 +201,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             if (resultStruct.size == -1) {
                 print("error found")
             } else {
+                self.locationField.fadeIn()
                 self.locations = resultStruct.countries
             }
         })
@@ -294,6 +317,13 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         }
         
         self.locationPicker.selectRow(0, inComponent: 0, animated: false)
+        
+        if(locationField.text != "" && stateField.text != "" && cityField.text != ""){
+            download_button.isHidden = false
+        }
+        else {
+            download_button.isHidden = true
+        }
     }
     
     func optionChanged(textfield: Int){

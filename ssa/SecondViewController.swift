@@ -12,10 +12,6 @@ import CoreBluetooth
 
 class SecondViewController: UIViewController, UgiInventoryDelegate  {
 
-    func navigationControllerSupportedInterfaceOrientations(navigationController: UINavigationController) -> UIInterfaceOrientationMask {
-        return UIInterfaceOrientationMask.portrait
-    }
-    
     @IBOutlet weak var TagLabel: UILabel!
     // Variables
     let db = SQLiteDB.sharedInstance
