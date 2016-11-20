@@ -187,7 +187,7 @@ class RemoteMySQL {
         else {
             parameterString = "?country=" + country! + "&state=" + state!
         }
-        let tempURL = SERVER + "/rfid/api/listcities.php\(parameterString)"
+        let tempURL = SERVER + "/rfid/api/listcities.php\(parameterString!)"
         let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         let requestURL = NSURL(string: encodedURL!)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -246,7 +246,7 @@ class RemoteMySQL {
         else {
             parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
         }
-        let tempURL = SERVER + "/rfid/api/querylocations.php\(parameterString)"
+        let tempURL = SERVER + "/rfid/api/querylocations.php\(parameterString!)"
         let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         let requestURL = NSURL(string: encodedURL!)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -312,7 +312,7 @@ class RemoteMySQL {
         else {
             parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
         }
-        let tempURL = SERVER + "/rfid/api/querydescriptions.php\(parameterString)"
+        let tempURL = SERVER + "/rfid/api/querydescriptions.php\(parameterString!)"
         let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         let requestURL = NSURL(string: encodedURL!)
         let request = NSMutableURLRequest(url: requestURL! as URL)
@@ -373,7 +373,7 @@ class RemoteMySQL {
         else {
             parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
         }
-        let tempURL = SERVER + "/rfid/api/querytags.php\(parameterString)"
+        let tempURL = SERVER + "/rfid/api/querytags.php\(parameterString!)"
         let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         let requestURL = NSURL(string: encodedURL!)
         let request = NSMutableURLRequest(url: requestURL! as URL)
