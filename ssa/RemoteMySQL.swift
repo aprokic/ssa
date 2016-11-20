@@ -150,7 +150,7 @@ class RemoteMySQL {
                         {
                             let resultState = subArray["state_province_region"] as! String
                             if resultState.isEmpty {
-                                resultArr.states.append("Not Available");
+                                resultArr.states.append("Not Applicable");
                             }
                             else {
                                 resultArr.states.append(resultState);                          
@@ -172,7 +172,7 @@ class RemoteMySQL {
     
     func getCities(country: String?, state: String?, callback: @escaping (CityInfo) -> ()) {
         var parameterString: String?
-        if state == "Not Available" {
+        if state == "Not Applicable" {
             parameterString = "?country=" + country! + "&state="
         }
         else {
@@ -226,7 +226,7 @@ class RemoteMySQL {
                       callback: @escaping (LocationInfo) -> ()) {
         // percent encode the parameter string
         var parameterString: String?
-        if state == "Not Available" {
+        if state == "Not Applicable" {
             parameterString = "?country=" + country! + "&state=&city=" + city!
         }
         else {
@@ -287,7 +287,7 @@ class RemoteMySQL {
                          callback: @escaping (DescriptionInfo) -> ()) {
         
         var parameterString: String?
-        if state == "Not Available" {
+        if state == "Not Applicable" {
             parameterString = "?country=" + country! + "&state=&city=" + city!
         }
         else {
@@ -343,7 +343,7 @@ class RemoteMySQL {
     func getTags(country: String?, state: String?, city: String?, callback: @escaping (TagInfo)->()) {
         
         var parameterString: String?
-        if state == "Not Available" {
+        if state == "Not Applicable" {
             parameterString = "?country=" + country! + "&state=&city=" + city!
         }
         else {
@@ -431,7 +431,7 @@ class RemoteMySQL {
                             resultArr.country = subArray["country"] as! String
                             let resultState = subArray["state_province_region"] as! String
                             if resultState.isEmpty {
-                                resultArr.state_province_region = "Not Available"
+                                resultArr.state_province_region = "Not Applicable"
                             }
                             else {
                                 resultArr.state_province_region = ResultState                         
@@ -440,9 +440,9 @@ class RemoteMySQL {
                         }
                     }
                     else {
-                        resultArr.country = "Not Available"
-                        resultArr.state_province_region = "Not Available"
-                        resultArr.city = "Not Available"
+                        resultArr.country = "Not Applicable"
+                        resultArr.state_province_region = "Not Applicable"
+                        resultArr.city = "Not Applicable"
                     }
                     
                     //returning the response
