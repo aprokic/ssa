@@ -69,7 +69,7 @@ struct ScanCity {
 }
 
 class RemoteMySQL {
-    let SERVER = "http://35.2.151.196"
+    let SERVER = "http://35.2.132.215"
     
     func getCountries(callback: @escaping (CountryInfo) -> ()) {
         let URL_LIST_COUNTRIES = SERVER + "/rfid/api/listcountries.php"
@@ -148,7 +148,13 @@ class RemoteMySQL {
                     for i in 0..<resultArr.size {
                         if let subArray = parseJSON[String(i)] as? [String: AnyObject]
                         {
-                            resultArr.states.append(subArray["state_province_region"] as! String);
+                            let resultState = subArray["state_province_region"] as! String
+                            if resultState.isEmpty {
+                                resultArr.states.append("Not Available");
+                            }
+                            else {
+                                resultArr.states.append(resultState);                          
+                            }
                         }
                     }
                     
@@ -165,7 +171,13 @@ class RemoteMySQL {
     }
     
     func getCities(country: String?, state: String?, callback: @escaping (CityInfo) -> ()) {
-        let parameterString = "?country=" + country! + "&state=" + state!
+        var parameterString: String?
+        if state == "Not Available" {
+            parameterString = "?country=" + country! + "&state="
+        }
+        else {
+            parameterString = "?country=" + country! + "&state=" + state!
+        }
         let tempURL = SERVER + "/rfid/api/listcities.php\(parameterString)"
         let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         let requestURL = NSURL(string: encodedURL!)
@@ -213,7 +225,13 @@ class RemoteMySQL {
     func getLocations(country: String?, state: String?, city: String?,
                       callback: @escaping (LocationInfo) -> ()) {
         // percent encode the parameter string
-        let parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
+        var parameterString: String?
+        if state == "Not Available" {
+            parameterString = "?country=" + country! + "&state=&city=" + city!
+        }
+        else {
+            parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
+        }
         let tempURL = SERVER + "/rfid/api/querylocations.php\(parameterString)"
         let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         let requestURL = NSURL(string: encodedURL!)
@@ -268,7 +286,13 @@ class RemoteMySQL {
     func getDescriptions(country: String?, state: String?, city: String?,
                          callback: @escaping (DescriptionInfo) -> ()) {
         
-        let parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
+        var parameterString: String?
+        if state == "Not Available" {
+            parameterString = "?country=" + country! + "&state=&city=" + city!
+        }
+        else {
+            parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
+        }
         let tempURL = SERVER + "/rfid/api/querydescriptions.php\(parameterString)"
         let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         let requestURL = NSURL(string: encodedURL!)
@@ -318,7 +342,13 @@ class RemoteMySQL {
     
     func getTags(country: String?, state: String?, city: String?, callback: @escaping (TagInfo)->()) {
         
-        let parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
+        var parameterString: String?
+        if state == "Not Available" {
+            parameterString = "?country=" + country! + "&state=&city=" + city!
+        }
+        else {
+            parameterString = "?country=" + country! + "&state=" + state! + "&city=" + city!
+        }
         let tempURL = SERVER + "/rfid/api/querytags.php\(parameterString)"
         let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
         let requestURL = NSURL(string: encodedURL!)
@@ -398,7 +428,13 @@ class RemoteMySQL {
                     if let subArray = parseJSON["0"] as? [String: AnyObject]
                     {
                         resultArr.country = subArray["country"] as! String
-                        resultArr.state_province_region = subArray["state_province_region"] as! String
+                        let resultState = subArray["state_province_region"] as! String
+                        if resultState.isEmpty {
+                            resultArr.state_province_region = "Not Available"
+                        }
+                        else {
+                            resultArr.state_province_region = ResultState                         
+                        }
                         resultArr.city = subArray["city"] as! String
                     }
                     
