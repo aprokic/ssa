@@ -45,6 +45,8 @@ class SecondViewController: UIViewController, UgiInventoryDelegate  {
         // query database for description
         let data = db.query(sql: "SELECT description FROM descriptions WHERE lid=? AND did=?", parameters:[lid, did])
         
+        //let data = db.query(sql: "SELECT * FROM tags")
+        
         // RFID Tag found in DB.
         if (!data.isEmpty){
             // Since we queried one tag at a time, the returned dictionary only has one entry.
