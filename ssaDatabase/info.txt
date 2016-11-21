@@ -1,5 +1,0 @@
-Database has all of the tables but contains no data.
-
-Managed to add trigger that enforces the tag type constraint.
-If someone tries to insert a tuple into 'tags' that has type = 0 and price NOT NULL, disallow insert and throw error.
-Same applies for update.

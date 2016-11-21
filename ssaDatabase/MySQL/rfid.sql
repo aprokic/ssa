@@ -1,7 +1,7 @@
 pragma foreign_keys = on;
 
 create table locations (
-	lid binary(36),
+	lid char(9),
 	street varchar(100) not null,
 	city varchar(100) not null,
 	state_province_region varchar(100) not null,
@@ -12,8 +12,8 @@ create table locations (
 );
 
 create table descriptions (
-	lid binary(36),
-	did binary(32),
+	lid char(9),
+	did char(8),
 	description varchar(4096) not null,
 	price real,
 	primary key(lid, did),
@@ -21,22 +21,21 @@ create table descriptions (
 );
 
 create table tags (
-	type binary(8),
-	location binary(36),
-	description binary(32),
-	reserved binary(20),
+	type char(2),
+	location char(9),
+	description char(8),
+	reserved char(5),
 	primary key(type, location, description, reserved),
 	foreign key(location) references locations(lid),
 	foreign key(location, description) references descriptions(lid, did)
-); 
+);
 
 --if type is not item (tid=0) price must be null
 --if type is item (tid=1) price may or may not be null
-/*
 create trigger insert_trigger before insert on tags
 begin
 select case
-when (not(new.type = cast(1 as binary(10)) or (new.type = cast(0 as binary(10)) and null in (
+when (not(new.type = '1' or (new.type = '0' and null in (
  	select d.price from descriptions d, tags t where d.lid = t.location and d.did = t.description))))
 then raise(abort, 'tag type mismatch')
 end;
@@ -45,9 +44,8 @@ end;
 create trigger update_trigger before update on tags
 begin
 select case
-when (not(new.type = cast(1 as binary(10)) or (new.type = cast(0 as binary(10)) and null in (
+when (not(new.type = '1' or (new.type = '0' and null in (
  	select d.price from descriptions d, tags t where d.lid = t.location and d.did = t.description))))
 then raise(abort, 'tag type mismatch')
 end;
-*/
 end;

@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import AVFoundation
+import CoreBluetooth
 
 class ViewController: UIViewController, UgiInventoryDelegate {
 
@@ -15,14 +17,17 @@ class ViewController: UIViewController, UgiInventoryDelegate {
     let db = SQLiteDB.sharedInstance
     var scanPaused = false
     var scanStopped = true
-    
     // Queue of descriptions to be read aloud
     let descriptionQueue = Queue<String>();
+    // Dictionary of RFID tags to the time it was read aloud.
+    var finishedDescriptions: [String:NSDate] = [:];
+    var session = AVAudioSession.sharedInstance()
+    // Text to speech reader
+    let speechSynthesizer = AVSpeechSynthesizer()
     
     // Update UI when a tag is found
     func inventoryTagFound(_ tag: UgiTag!,
                            withDetailedPerReadData detailedPerReadData: [UgiDetailedPerReadData]?) {
-        //let rfid = inventory!.tags.first!.epc.toString()
         let rfid = tag.epc.toString()
         
         // declare index ranges for hex RFID string
@@ -46,7 +51,28 @@ class ViewController: UIViewController, UgiInventoryDelegate {
             if let description = row["description"]{
                 // Change the label, and push it onto queue of descriptions.
                 displayTagLabel.text = description as? String
-                descriptionQueue.enqueue(value: description as! String);
+                descriptionQueue.enqueue(value: description as! String)
+                let descriptionUtter = AVSpeechUtterance(string: descriptionQueue.dequeue()!)
+                
+
+                // ********************************************
+                // ****** SCROLL AVAILABLE OUTPUT ROUTES ******
+                /*let currentRoute = self.session.currentRoute
+                for route in currentRoute.outputs {
+                    sleep(2)
+                }*/
+                // ********************************************
+                
+                // ******* DOESN'T SEEM TO BE NECESSARY *******
+                //try! self.session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: [.allowBluetooth, .allowBluetoothA2DP])
+                // ********************************************
+
+                try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
+                self.speechSynthesizer.speak(descriptionUtter)
+                //allow time for description to finish asynchronously before returning control to reader
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+                    try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.none)
+                })
             }
         }
     }
@@ -73,10 +99,18 @@ class ViewController: UIViewController, UgiInventoryDelegate {
     // Control for Read Button
     @IBAction func readButton(_ sender: UIButton) {
         let inventory: UgiInventory? = Ugi.singleton().activeInventory
+        
+        // Set scanner configuration
+        var config: UgiRfidConfiguration
+        config = UgiRfidConfiguration.config(withInventoryType: UgiInventoryTypes.UGI_INVENTORY_TYPE_LOCATE_DISTANCE)
+        config.maxPowerLevel = UgiRfidConfiguration.getMaxAllowablePowerLevel()
+        config.minPowerLevel = UgiRfidConfiguration.getMaxAllowablePowerLevel()
+        config.initialPowerLevel = UgiRfidConfiguration.getMaxAllowablePowerLevel()
+        config.soundType = UgiSoundTypes.UGI_INVENTORY_SOUNDS_NONE
+        
+        // Set button state and start scanning
         if scanStopped {
-            Ugi.singleton().startInventory(
-                self,
-                with: UgiRfidConfiguration.config(withInventoryType: UgiInventoryTypes.UGI_INVENTORY_TYPE_LOCATE_DISTANCE))
+            Ugi.singleton().startInventory(self, with: config)
             sender.setTitle("SCANNING", for: .normal)
             self.scanStopped = false
         }
