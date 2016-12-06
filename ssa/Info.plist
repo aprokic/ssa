@@ -26,7 +26,7 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>http://35.2.132.215</key>
+			<key>http://35.2.252.99</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
 				<true/>
@@ -35,10 +35,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone is Required for RFID Reader to Work. The App Will Not Work Without This Functionality.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string></string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string></string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location Will Be Used to Assist in Downloading Local RFID Tags</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

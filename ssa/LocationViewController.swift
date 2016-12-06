@@ -15,6 +15,14 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     var states: [String] = []
     var cities: [String] = []
     
+    // these variables hold GPS location data
+    var curCity: String?
+    var curStateProvinceRegion: String?
+    var curCountry: String?
+    var curLocationFound = false // true only if GPS successfully returns location
+    let manager = CLLocationManager()
+
+    
     @IBOutlet weak var locationField: UITextField!
     @IBOutlet weak var stateField: UITextField!
     @IBOutlet weak var cityField: UITextField!
@@ -27,6 +35,9 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         if locationField.text == "" || stateField.text == "" || cityField.text == "" {
             return;
         } else {
+            // force-quit GPS location update if here
+            manager.stopUpdatingLocation()
+            
             self.alert_message.text = "Downloading..."
             self.alert_message.textColor = UIColor.blue
             let db = SQLiteDB.sharedInstance;
@@ -176,6 +187,12 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         
         download_button.isHidden = true
         
+        // setup GPS location manager
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.requestWhenInUseAuthorization()
+        manager.startUpdatingLocation()
+        
         locationPicker.delegate = self
         locationPicker.dataSource = self
         locationPicker.showsSelectionIndicator = true
@@ -210,7 +227,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         locationPicker.backgroundColor = UIColor(white: 1, alpha: 1)
         
         // query for all valid countries
-        var mySQLDB = RemoteMySQL()
+        let mySQLDB = RemoteMySQL()
         mySQLDB.getCountries(callback: { resultStruct in
             if (resultStruct.size == -1) {
                 print("error found")
@@ -219,6 +236,40 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 self.locations = resultStruct.countries
             }
         })
+    }
+    
+    // handle updates to user's location
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        CLGeocoder().reverseGeocodeLocation(manager.location!, completionHandler: {(placemarks, error)->Void in
+            if (error != nil) {
+                print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
+                return
+            }
+            
+            if (placemarks?.count)! > 0 {
+                let pm = (placemarks?[0])! as CLPlacemark
+                self.displayLocationInfo(placemark: pm)
+            } else {
+                print("Problem with the data received from geocoder")
+            }
+        })
+    }
+    
+    // display location info
+    func displayLocationInfo(placemark: CLPlacemark?) {
+        if (placemark != nil) {
+            //stop updating location to save battery life
+            manager.stopUpdatingLocation()
+            self.curCity = placemark?.locality
+            self.curStateProvinceRegion = placemark?.administrativeArea
+            self.curCountry = placemark?.country
+            self.curLocationFound = true
+        }
+    }
+    
+    // handle errors in user's location retrieval
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Error while updating location " + error.localizedDescription)
     }
     
     // returns the number of 'columns' to display.

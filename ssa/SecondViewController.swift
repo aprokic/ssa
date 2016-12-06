@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import CoreBluetooth
 
-class SecondViewController: UIViewController, UgiInventoryDelegate  {
+class SecondViewController: UIViewController, UgiInventoryDelegate {
 
     @IBOutlet weak var TagLabel: UILabel!
     // Variables
