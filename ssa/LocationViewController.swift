@@ -263,7 +263,11 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             self.curCity = placemark?.locality
             self.curStateProvinceRegion = placemark?.administrativeArea
             self.curCountry = placemark?.country
-            self.curLocationFound = true
+            
+            // set flag to true only if all necessary info is found
+            if (placemark?.locality != nil && placemark?.administrativeArea != nil && placemark?.country != nil) {
+                self.curLocationFound = true
+            }
         }
     }
     
