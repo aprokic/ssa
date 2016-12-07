@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import CoreBluetooth
+import MediaPlayer
 
 class SecondViewController: UIViewController, UgiInventoryDelegate {
 
@@ -17,6 +18,7 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
     let db = SQLiteDB.sharedInstance
     var scanPaused = false
     var scanStopped = true
+    var bluetoothChoice = false
     // Queue of descriptions to be read aloud
     let descriptionQueue = Queue<String>();
     // Dictionary of RFID tags to the time it was read aloud.
@@ -24,6 +26,7 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
     var session = AVAudioSession.sharedInstance()
     // Text to speech reader
     let speechSynthesizer = AVSpeechSynthesizer()
+    var audioPlayer = AVAudioPlayer()
     
     // Update UI when a tag is found
     func inventoryTagFound(_ tag: UgiTag!,
@@ -55,21 +58,9 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
                 // Change the label, and push it onto queue of descriptions.
                 TagLabel.text = description as? String
                 descriptionQueue.enqueue(value: description as! String);
-                
                 let descriptionUtter = AVSpeechUtterance(string: descriptionQueue.dequeue()!)
                 
-                // ********************************************
-                // ****** SCROLL AVAILABLE OUTPUT ROUTES ******
-                /*let currentRoute = self.session.currentRoute
-                 for route in currentRoute.outputs {
-                 sleep(2)
-                 }*/
-                // ********************************************
-                
-                // ******* DOESN'T SEEM TO BE NECESSARY *******
-                //try! self.session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: [.allowBluetooth, .allowBluetoothA2DP])
-                // ********************************************
-                
+                // Output Audio and Override Route
                 try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
                 self.speechSynthesizer.speak(descriptionUtter)
                 //allow time for description to finish asynchronously before returning control to reader
@@ -118,6 +109,17 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
     }
 
     override func viewDidLoad() {
+        // Create a volume slider with output audio route
+        let wrapperView = UIView(frame: CGRect(x: 30, y: 200, width: 260, height: 20))
+        wrapperView.backgroundColor = UIColor.clear
+        self.view.addSubview(wrapperView)
+        let volumeView = MPVolumeView(frame: wrapperView.bounds)
+        volumeView.showsRouteButton = false
+        wrapperView.addSubview(volumeView)
+        
+        // Turn on bluetooth audio routes
+        try! self.session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: [.allowBluetoothA2DP])
+        
         super.viewDidLoad()
         self.scanner(nil)
     }
