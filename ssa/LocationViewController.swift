@@ -15,6 +15,62 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     var states: [String] = []
     var cities: [String] = []
     
+    var statesDictionary = [ "AK" : "Alaska",
+                              "AL" : "Alabama",
+                              "AR" : "Arkansas",
+                              "AS" : "American Samoa",
+                              "AZ" : "Arizona",
+                              "CA" : "California",
+                              "CO" : "Colorado",
+                              "CT" : "Connecticut",
+                              "DC" : "District of Columbia",
+                              "DE" : "Delaware",
+                              "FL" : "Florida",
+                              "GA" : "Georgia",
+                              "GU" : "Guam",
+                              "HI" : "Hawaii",
+                              "IA" : "Iowa",
+                              "ID" : "Idaho",
+                              "IL" : "Illinois",
+                              "IN" : "Indiana",
+                              "KS" : "Kansas",
+                              "KY" : "Kentucky",
+                              "LA" : "Louisiana",
+                              "MA" : "Massachusetts",
+                              "MD" : "Maryland",
+                              "ME" : "Maine",
+                              "MI" : "Michigan",
+                              "MN" : "Minnesota",
+                              "MO" : "Missouri",
+                              "MS" : "Mississippi",
+                              "MT" : "Montana",
+                              "NC" : "North Carolina",
+                              "ND" : "North Dakota",
+                              "NE" : "Nebraska",
+                              "NH" : "New Hampshire",
+                              "NJ" : "New Jersey",
+                              "NM" : "New Mexico",
+                              "NV" : "Nevada",
+                              "NY" : "New York",
+                              "OH" : "Ohio",
+                              "OK" : "Oklahoma",
+                              "OR" : "Oregon",
+                              "PA" : "Pennsylvania",
+                              "PR" : "Puerto Rico",
+                              "RI" : "Rhode Island",
+                              "SC" : "South Carolina",
+                              "SD" : "South Dakota",
+                              "TN" : "Tennessee",
+                              "TX" : "Texas",
+                              "UT" : "Utah",
+                              "VA" : "Virginia",
+                              "VI" : "Virgin Islands",
+                              "VT" : "Vermont",
+                              "WA" : "Washington",
+                              "WI" : "Wisconsin",
+                              "WV" : "West Virginia",
+                              "WY" : "Wyoming"]
+    
     // these variables hold GPS location data
     var curCity: String?
     var curStateProvinceRegion: String?
@@ -235,6 +291,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         
         
         let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        
         let cancelButton_country = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(LocationViewController.cancelPicker(_:)))
         let cancelButton_state = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(LocationViewController.cancelPicker(_:)))
         let cancelButton_city = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(LocationViewController.cancelPicker(_:)))
@@ -279,6 +336,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     // handle updates to user's location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         CLGeocoder().reverseGeocodeLocation(manager.location!, completionHandler: {(placemarks, error)->Void in
+            
             if (error != nil) {
                 print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
                 return
@@ -295,12 +353,40 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     // display location info
     func displayLocationInfo(placemark: CLPlacemark?) {
+        
         if (placemark != nil) {
             //stop updating location to save battery life
             manager.stopUpdatingLocation()
             self.curCity = placemark?.locality
             self.curStateProvinceRegion = placemark?.administrativeArea
             self.curCountry = placemark?.country
+            
+            
+            if curLocationFound {
+                
+                let mySQLDB = RemoteMySQL()
+                mySQLDB.getCountries(callback: { resultStruct in
+                    if (resultStruct.size == -1) {
+                        print("error found")
+                    } else {
+                        self.countryField.fadeIn()
+                        self.countries = resultStruct.countries
+                    }
+                })
+                
+                if countries.contains(curCountry!) {
+                    mySQLDB.getStates(country: countryField.text, callback: { resultStruct in
+                        self.states = resultStruct.states
+                    
+                    })
+                    self.countryField.text = self.curCountry!
+                    
+                    state_is_selected = 0
+                    self.stateField.fadeIn()
+                }
+                
+                
+            }
             
             // set flag to true only if all necessary info is found
             if (placemark?.locality != nil && placemark?.administrativeArea != nil && placemark?.country != nil) {
