@@ -46,10 +46,37 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             var descInfo = DescriptionInfo()
             var tagInfo = TagInfo()
             
-            // Remove existing entries in local DB
-            db.query(sql: "DELETE FROM tags")
-            db.query(sql: "DELETE FROM descriptions")
-            db.query(sql: "DELETE FROM locations")
+            // Remove tags from local DB for city to be updated
+            db.query(sql:
+            "DELETE " +
+            "FROM tags t " +
+            "WHERE t.location in " +
+                "(SELECT t1.location " +
+                "FROM tags t1 " +
+                "JOIN locations l1 ON t1.location = l1.lid " +
+                "WHERE l1.city = ? " +
+                    "AND l1.state_province_region = ? " +
+                    "AND l1.country = ?)", parameters:[cityField.text, stateField.text, locationField.text])
+            
+            // Remove descriptions from local DB for city to be updated
+            db.query(sql:
+            "DELETE " +
+            "FROM descriptions d " +
+            "WHERE d.lid in " +
+                "(SELECT d1.lid " +
+                "FROM descriptions d1 " +
+                "JOIN locations l1 ON d1.lid = l1.lid " +
+                "WHERE l1.city = ? " +
+                    "AND l1.state_province_region = ? " +
+                    "AND l1.country = ?)", parameters:[cityField.text, stateField.text, locationField.text])
+            
+            // Remove locations from local DB for city to be updated
+            db.query(sql:
+            "DELETE " +
+            "FROM locations l " +
+            "WHERE l.city = ?" +
+                "AND l.state_province_region = ? " +
+                "AND l.country = ?", parameters:[cityField.text, stateField.text, locationField.text])
             
             // Query database for info
             var mySQLDB = RemoteMySQL()
