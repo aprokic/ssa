@@ -7,10 +7,18 @@
 //
 
 import UIKit
+import AVFoundation
 
 class HomeViewController: UIViewController,  UgiInventoryDelegate {
     
-    @IBOutlet weak var start_scanning: UIButton!
+  
+    @IBAction func handleLongPress(_ sender: UILongPressGestureRecognizer) {
+        let utterance = AVSpeechUtterance(string: "swipe right to download r f i d tags or swipe left to start scanning")
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        
+        let synthesizer = AVSpeechSynthesizer()
+        synthesizer.speak(utterance)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,10 +28,11 @@ class HomeViewController: UIViewController,  UgiInventoryDelegate {
             inventory!.stop {
             }
         }
+        
 
         // Do any additional setup after loading the view.
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
