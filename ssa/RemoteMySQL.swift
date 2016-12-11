@@ -69,7 +69,7 @@ struct ScanCity {
 }
 
 class RemoteMySQL {
-    let SERVER = "http://35.1.239.55"
+    let SERVER = "http://35.2.158.134"
     
     func getCountries(callback: @escaping (CountryInfo) -> ()) {
         let URL_LIST_COUNTRIES = SERVER + "/rfid/api/listcountries.php"
