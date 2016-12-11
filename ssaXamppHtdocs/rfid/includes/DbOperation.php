@@ -205,6 +205,17 @@ class DbOperation {
         mysqli_close($this->conn);
         return $rows;
     }
+
+    public function getCount($country, $state, $city) {
+        $sql = "select count(*) as size from tags t join locations l on t.location = l.lid where l.country = '$country' and l.state_province_region = '$state' and l.city = '$city'";
+        $result = mysqli_query($this->conn, $sql);
+        $rows = array();
+        while ($r = mysqli_fetch_assoc($result)) {
+            $rows[] = $r;
+        }
+        mysqli_close($this->conn);
+        return $rows;
+    }
 }
 
 ?>
