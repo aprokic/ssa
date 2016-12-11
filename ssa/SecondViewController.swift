@@ -22,11 +22,12 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
     // Queue of descriptions to be read aloud
     let descriptionQueue = Queue<String>();
     // Dictionary of RFID tags to the time it was read aloud.
-    var finishedDescriptions: [String:NSDate] = [:];
+    var finishedDescriptions: [String:Int] = [:];
     var session = AVAudioSession.sharedInstance()
     // Text to speech reader
     let speechSynthesizer = AVSpeechSynthesizer()
     var audioPlayer = AVAudioPlayer()
+    let cv = NSCondition()
     
     // Update UI when a tag is found
     func inventoryTagFound(_ tag: UgiTag!,
@@ -56,24 +57,55 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
             let row = data[0]
             if let description = row["description"]{
                 // Change the label, and push it onto queue of descriptions.
-                TagLabel.text = description as? String
                 descriptionQueue.enqueue(value: description as! String);
-                let descriptionUtter = AVSpeechUtterance(string: descriptionQueue.dequeue()!)
-                
-                // Output Audio and Override Route
-                try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
-                self.speechSynthesizer.speak(descriptionUtter)
-                //allow time for description to finish asynchronously before returning control to reader
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
-                    try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.none)
-                })
+                finishedDescriptions[rfid!] = NSCalendar.current.component(.minute, from: NSDate() as Date)
+                cv.signal()
             }
         }
     }
     
     // Take special actions on subsequent find
     func inventoryTagSubsequentFinds(_ tag: UgiTag!, numFinds num: Int32, withDetailedPerReadData detailedPerReadData: [UgiDetailedPerReadData]!) {
+        let rfid = tag.epc.toString()
         
+        if let tagTime = finishedDescriptions[rfid!] {
+            // If subsequent find was read too recently, return. Otherwise remove it from dictionary
+            if (NSCalendar.current.component(.minute, from: NSDate() as Date) - tagTime > 60) {
+                finishedDescriptions.removeValue(forKey: rfid!)
+            } else {
+                return
+            }
+        }
+        
+        // Otherwise if the tag was not found, it was recently removed and can now be read
+        // declare index ranges for hex RFID string
+        let endTypeRange = rfid!.index(rfid!.startIndex, offsetBy: 2)
+        let endLocRange = rfid!.index(rfid!.startIndex, offsetBy: 11)
+        let endDescRange = rfid!.index(rfid!.startIndex, offsetBy: 19)
+        let locRange = endTypeRange..<endLocRange
+        let descRange = endLocRange..<endDescRange
+        
+        // get necessary rfid subcomponents
+        let lid = rfid!.substring(with: locRange)
+        let did = rfid!.substring(with: descRange)
+        
+        // query database for description
+        let data = db.query(sql: "SELECT description FROM descriptions WHERE lid=? AND did=?", parameters:[lid, did])
+        
+        //let data = db.query(sql: "SELECT * FROM tags")
+        
+        // RFID Tag found in DB.
+        if (!data.isEmpty){
+            // Since we queried one tag at a time, the returned dictionary only has one entry.
+            let row = data[0]
+            if let description = row["description"]{
+                // Change the label, and push it onto queue of descriptions.
+                TagLabel.text = description as? String
+                descriptionQueue.enqueue(value: description as! String);
+                finishedDescriptions[rfid!] = NSCalendar.current.component(.minute, from: NSDate() as Date)
+                cv.signal()
+            }
+        }
     }
     
     @IBAction func scanner(_ sender: AnyObject?) {
@@ -122,6 +154,30 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
         
         super.viewDidLoad()
         self.scanner(nil)
+        
+        DispatchQueue.global(qos: .background).async {
+            while true {
+                self.cv.lock()
+                while (self.descriptionQueue.isEmpty()) {
+                    self.cv.wait()
+                }
+                
+                let nextDescription = self.descriptionQueue.dequeue()!
+                self.TagLabel.text = nextDescription
+                let descriptionUtter = AVSpeechUtterance(string: nextDescription)
+                try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
+                self.speechSynthesizer.speak(descriptionUtter)
+                while (self.speechSynthesizer.isSpeaking) {
+                    
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+                    self.finishedDescriptions[nextDescription] = NSCalendar.current.component(.minute, from: NSDate() as Date)
+                    try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.none)
+                })
+                
+                self.cv.unlock()
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
