@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -72,57 +71,53 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7UO-d7-S4m">
-                                <rect key="frame" x="16" y="62" width="288" height="185"/>
-                                <color key="backgroundColor" red="0.83034581220000003" green="0.1242121034" blue="0.0071740080650000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="185" id="Bo2-Ee-bBW"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="35"/>
-                                <state key="normal" title="Download DB">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="10"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <segue destination="kRT-2F-4D3" kind="show" id="nm7-3y-wOg"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ul9-jS-Bn3">
-                                <rect key="frame" x="16" y="302" width="288" height="185"/>
-                                <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="35"/>
-                                <state key="normal" title="Start Scanning">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="10"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <segue destination="v4n-82-Sf6" kind="show" identifier="ShowSecondView" id="L3x-UA-jrX"/>
-                                </connections>
-                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Standard for Spatial Accessibility" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dPK-2O-Eop">
+                                <rect key="frame" x="28" y="48" width="265" height="140"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="27"/>
+                                <color key="textColor" red="0.0" green="0.50196081400000003" blue="0.25098040700000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="&lt;" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3fi-VS-m3m">
+                                <rect key="frame" x="0.0" y="269" width="92" height="69"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="100"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="&gt;" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nbq-0o-MrW">
+                                <rect key="frame" x="220" y="269" width="92" height="69"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="100"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="ul9-jS-Bn3" firstAttribute="top" secondItem="7UO-d7-S4m" secondAttribute="bottom" constant="55" id="Aso-LF-ERv"/>
-                            <constraint firstItem="7UO-d7-S4m" firstAttribute="trailing" secondItem="ul9-jS-Bn3" secondAttribute="trailing" id="HmB-VT-1oJ"/>
-                            <constraint firstItem="7UO-d7-S4m" firstAttribute="leading" secondItem="ul9-jS-Bn3" secondAttribute="leading" id="KNe-rg-PHn"/>
-                            <constraint firstItem="7UO-d7-S4m" firstAttribute="top" secondItem="nNb-M6-8Bi" secondAttribute="bottom" constant="42" id="Ksc-Fb-y29"/>
-                            <constraint firstItem="7UO-d7-S4m" firstAttribute="trailing" secondItem="CKA-4i-dMA" secondAttribute="trailingMargin" id="Td1-bi-FEY"/>
-                            <constraint firstItem="7UO-d7-S4m" firstAttribute="leading" secondItem="CKA-4i-dMA" secondAttribute="leadingMargin" id="kQd-w6-ni8"/>
-                            <constraint firstItem="jTM-eP-cgo" firstAttribute="top" secondItem="ul9-jS-Bn3" secondAttribute="bottom" constant="81" id="srF-UL-f1N"/>
-                        </constraints>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <gestureRecognizers/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="y8R-hi-Zp4" appends="YES" id="yZU-gz-0az"/>
+                            <outletCollection property="gestureRecognizers" destination="YuE-eV-YQA" appends="YES" id="n5B-NW-XX3"/>
+                            <outletCollection property="gestureRecognizers" destination="59p-vF-Qp1" appends="YES" id="vgF-nr-OTr"/>
+                        </connections>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q5k-Ed-4RD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer direction="right" id="y8R-hi-Zp4">
+                    <connections>
+                        <segue destination="kRT-2F-4D3" kind="show" id="V54-ce-GPe"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="left" id="YuE-eV-YQA">
+                    <connections>
+                        <segue destination="v4n-82-Sf6" kind="show" id="Aei-OQ-wN7"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="59p-vF-Qp1">
+                    <connections>
+                        <action selector="handleLongPress:" destination="If8-OR-QF3" id="uMn-0y-x6S"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-2227.5" y="139.43661971830986"/>
         </scene>
@@ -142,23 +137,17 @@
                                 <rect key="frame" x="35" y="71" width="239" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="blp-vH-CbY">
-                                <rect key="frame" x="81" y="406" width="147" height="42"/>
+                                <rect key="frame" x="0.0" y="366" width="320" height="202"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="56"/>
                                 <state key="normal" title="Download">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="10"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="download:" destination="kRT-2F-4D3" eventType="touchUpInside" id="Vck-yw-mMA"/>
                                 </connections>
@@ -167,14 +156,14 @@
                                 <rect key="frame" x="35" y="138" width="239" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Pick a City" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aag-IK-4Xm">
-                                <rect key="frame" x="35" y="211" width="239" height="30"/>
+                                <rect key="frame" x="35" y="214" width="239" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="76j-03-VdW">
@@ -194,19 +183,19 @@
                     <connections>
                         <outlet property="alert_message" destination="76j-03-VdW" id="7nv-U0-5sF"/>
                         <outlet property="cityField" destination="aag-IK-4Xm" id="Gvx-hO-LCR"/>
+                        <outlet property="countryField" destination="Co1-wD-efs" id="eWx-8H-YaX"/>
                         <outlet property="download_button" destination="blp-vH-CbY" id="oaK-iV-lp6"/>
-                        <outlet property="locationField" destination="Co1-wD-efs" id="ddP-YY-mf7"/>
                         <outlet property="stateField" destination="h3F-u3-wSM" id="grf-us-1KT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dae-cQ-BJG" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <swipeGestureRecognizer direction="right" id="LH5-bI-Wim">
+                <swipeGestureRecognizer direction="left" id="LH5-bI-Wim">
                     <connections>
                         <segue destination="If8-OR-QF3" kind="show" id="hah-fo-E5i"/>
                     </connections>
                 </swipeGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-2229.375" y="866.19718309859161"/>
+            <point key="canvasLocation" x="-3110.625" y="138.38028169014083"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

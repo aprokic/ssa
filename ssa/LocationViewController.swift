@@ -8,12 +8,69 @@
 
 import UIKit
 import CoreLocation
+import Darwin
 
 class LocationViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CLLocationManagerDelegate {
     
-    var locations: [String] = []
+    var countries: [String] = []
     var states: [String] = []
     var cities: [String] = []
+    
+    var statesDictionary = [ "AK" : "Alaska",
+                              "AL" : "Alabama",
+                              "AR" : "Arkansas",
+                              "AS" : "American Samoa",
+                              "AZ" : "Arizona",
+                              "CA" : "California",
+                              "CO" : "Colorado",
+                              "CT" : "Connecticut",
+                              "DC" : "District of Columbia",
+                              "DE" : "Delaware",
+                              "FL" : "Florida",
+                              "GA" : "Georgia",
+                              "GU" : "Guam",
+                              "HI" : "Hawaii",
+                              "IA" : "Iowa",
+                              "ID" : "Idaho",
+                              "IL" : "Illinois",
+                              "IN" : "Indiana",
+                              "KS" : "Kansas",
+                              "KY" : "Kentucky",
+                              "LA" : "Louisiana",
+                              "MA" : "Massachusetts",
+                              "MD" : "Maryland",
+                              "ME" : "Maine",
+                              "MI" : "Michigan",
+                              "MN" : "Minnesota",
+                              "MO" : "Missouri",
+                              "MS" : "Mississippi",
+                              "MT" : "Montana",
+                              "NC" : "North Carolina",
+                              "ND" : "North Dakota",
+                              "NE" : "Nebraska",
+                              "NH" : "New Hampshire",
+                              "NJ" : "New Jersey",
+                              "NM" : "New Mexico",
+                              "NV" : "Nevada",
+                              "NY" : "New York",
+                              "OH" : "Ohio",
+                              "OK" : "Oklahoma",
+                              "OR" : "Oregon",
+                              "PA" : "Pennsylvania",
+                              "PR" : "Puerto Rico",
+                              "RI" : "Rhode Island",
+                              "SC" : "South Carolina",
+                              "SD" : "South Dakota",
+                              "TN" : "Tennessee",
+                              "TX" : "Texas",
+                              "UT" : "Utah",
+                              "VA" : "Virginia",
+                              "VI" : "Virgin Islands",
+                              "VT" : "Vermont",
+                              "WA" : "Washington",
+                              "WI" : "Wisconsin",
+                              "WV" : "West Virginia",
+                              "WY" : "Wyoming"]
     
     // these variables hold GPS location data
     var curCity: String?
@@ -23,7 +80,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     let manager = CLLocationManager()
 
     
-    @IBOutlet weak var locationField: UITextField!
+    @IBOutlet weak var countryField: UITextField!
     @IBOutlet weak var stateField: UITextField!
     @IBOutlet weak var cityField: UITextField!
     
@@ -32,7 +89,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     @IBOutlet weak var alert_message: UILabel!
     
     @IBAction func download(_ sender: Any) {
-        if locationField.text == "" || stateField.text == "" || cityField.text == "" {
+        if countryField.text == "" || stateField.text == "" || cityField.text == "" {
             return;
         } else {
             // force-quit GPS location update if here
@@ -56,7 +113,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 "JOIN locations l1 ON t1.location = l1.lid " +
                 "WHERE l1.city = ? " +
                     "AND l1.state_province_region = ? " +
-                    "AND l1.country = ?)", parameters:[cityField.text, stateField.text, locationField.text])
+                    "AND l1.country = ?)", parameters:[cityField.text, stateField.text, countryField.text])
             
             // Remove descriptions from local DB for city to be updated
             db.query(sql:
@@ -68,7 +125,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 "JOIN locations l1 ON d1.lid = l1.lid " +
                 "WHERE l1.city = ? " +
                     "AND l1.state_province_region = ? " +
-                    "AND l1.country = ?)", parameters:[cityField.text, stateField.text, locationField.text])
+                    "AND l1.country = ?)", parameters:[cityField.text, stateField.text, countryField.text])
             
             // Remove locations from local DB for city to be updated
             db.query(sql:
@@ -76,12 +133,12 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             "FROM locations l " +
             "WHERE l.city = ?" +
                 "AND l.state_province_region = ? " +
-                "AND l.country = ?", parameters:[cityField.text, stateField.text, locationField.text])
+                "AND l.country = ?", parameters:[cityField.text, stateField.text, countryField.text])
             
             // Query database for info
             var mySQLDB = RemoteMySQL()
             // Query for Locations and Insert into local DB
-            mySQLDB.getLocations(country: locationField.text, state: stateField.text, city: cityField.text,
+            mySQLDB.getLocations(country: countryField.text, state: stateField.text, city: cityField.text,
                                callback: { locResultStruct in
                 locInfo = locResultStruct
                 
@@ -107,7 +164,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 db.query(sql: locSQLStr)
                 
                 // Query for Descriptions and insert into local DB
-                mySQLDB.getDescriptions(country: self.locationField.text, state: self.stateField.text, city: self.cityField.text,
+                mySQLDB.getDescriptions(country: self.countryField.text, state: self.stateField.text, city: self.cityField.text,
                                         callback: { descResultStruct in
                     descInfo = descResultStruct
 
@@ -152,7 +209,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                     db.query(sql: descSQLStr)
                     
                     // Query for tags and insert into local DB
-                    mySQLDB.getTags(country: self.locationField.text, state: self.stateField.text, city: self.cityField.text,
+                    mySQLDB.getTags(country: self.countryField.text, state: self.stateField.text, city: self.cityField.text,
                                     callback: { tagResultStruct in
                         tagInfo = tagResultStruct
                     
@@ -201,17 +258,22 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         
     }
     
-    var locationPicker = UIPickerView()
+    var countryPicker = UIPickerView()
+    var statePicker = UIPickerView()
+    var cityPicker = UIPickerView()
+    
     let locationManager = CLLocationManager()
     
-    var selectedRow_location = 0;
-    var selectedRow_state = -1;
-    var selectedRow_city = -1;
+    var country_is_selected = 0;
+    var state_is_selected = -1;
+    var city_is_selected = -1;
     
+    var already_called = false;
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        already_called = false
         download_button.isHidden = true
         
         // setup GPS location manager
@@ -220,38 +282,74 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
         
-        locationPicker.delegate = self
-        locationPicker.dataSource = self
-        locationPicker.showsSelectionIndicator = true
+        countryPicker.delegate = self
+        countryPicker.dataSource = self
+        countryPicker.showsSelectionIndicator = true
+        countryPicker.tag = 0
         
-        let toolBar = UIToolbar()
-        toolBar.barStyle = UIBarStyle.default
-        toolBar.isTranslucent = true
-        toolBar.tintColor = UIColor(red: 0/255, green: 0/255, blue: 255/255, alpha: 1)
-        toolBar.sizeToFit()
+        statePicker.delegate = self
+        statePicker.dataSource = self
+        statePicker.showsSelectionIndicator = true
+        statePicker.tag = 1
         
-        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(LocationViewController.donePicker(_:)))
+        cityPicker.delegate = self
+        cityPicker.dataSource = self
+        cityPicker.showsSelectionIndicator = true
+        cityPicker.tag = 2
+        
+        let toolBar1 = UIToolbar()
+        toolBar1.barStyle = UIBarStyle.default
+        toolBar1.isTranslucent = true
+        toolBar1.tintColor = UIColor(red: 0/255, green: 0/255, blue: 255/255, alpha: 1)
+        toolBar1.sizeToFit()
+        
+        let toolBar2 = UIToolbar()
+        toolBar2.barStyle = UIBarStyle.default
+        toolBar2.isTranslucent = true
+        toolBar2.tintColor = UIColor(red: 0/255, green: 0/255, blue: 255/255, alpha: 1)
+        toolBar2.sizeToFit()
+        
+        let toolBar3 = UIToolbar()
+        toolBar3.barStyle = UIBarStyle.default
+        toolBar3.isTranslucent = true
+        toolBar3.tintColor = UIColor(red: 0/255, green: 0/255, blue: 255/255, alpha: 1)
+        toolBar3.sizeToFit()
+        
+        let doneButton_country = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(LocationViewController.donePicker_country(_:)))
+        let doneButton_state = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(LocationViewController.donePicker_state(_:)))
+        let doneButton_city = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(LocationViewController.donePicker_city(_:)))
+        
+        
         let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(LocationViewController.cancelPicker(_:)))
         
-        toolBar.setItems([cancelButton, spaceButton, doneButton], animated: true)
-        toolBar.isUserInteractionEnabled = true
+        let cancelButton_country = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(LocationViewController.cancelPicker(_:)))
+        let cancelButton_state = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(LocationViewController.cancelPicker(_:)))
+        let cancelButton_city = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(LocationViewController.cancelPicker(_:)))
+        
+        toolBar1.isUserInteractionEnabled = true
+        toolBar2.isUserInteractionEnabled = true
+        toolBar3.isUserInteractionEnabled = true
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LocationViewController.cancelPicker(_:)))
         view.addGestureRecognizer(tap)
         
-        self.locationField.inputView = locationPicker
-        self.locationField.inputAccessoryView = toolBar
+        self.countryField.inputView = countryPicker
+        toolBar1.setItems([cancelButton_country, spaceButton, doneButton_country], animated: true)
+        self.countryField.inputAccessoryView = toolBar1
         
-        self.stateField.inputView = locationPicker
-        self.stateField.inputAccessoryView = toolBar
+        self.stateField.inputView = statePicker
+        toolBar2.setItems([cancelButton_state, spaceButton, doneButton_state], animated: true)
+        self.stateField.inputAccessoryView = toolBar2
         self.stateField.fadeOut()
         
-        self.cityField.inputView = locationPicker
-        self.cityField.inputAccessoryView = toolBar
+        self.cityField.inputView = cityPicker
+        toolBar3.setItems([cancelButton_city, spaceButton, doneButton_city], animated: true)
+        self.cityField.inputAccessoryView = toolBar3
         self.cityField.fadeOut()
         
-        locationPicker.backgroundColor = UIColor(white: 1, alpha: 1)
+        countryPicker.backgroundColor = UIColor(white: 1, alpha: 1)
+        statePicker.backgroundColor = UIColor(white: 1, alpha: 1)
+        cityPicker.backgroundColor = UIColor(white: 1, alpha: 1)
         
         // query for all valid countries
         let mySQLDB = RemoteMySQL()
@@ -259,15 +357,17 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             if (resultStruct.size == -1) {
                 print("error found")
             } else {
-                self.locationField.fadeIn()
-                self.locations = resultStruct.countries
+                self.countryField.fadeIn()
+                self.countries = resultStruct.countries
             }
         })
     }
     
+    
     // handle updates to user's location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         CLGeocoder().reverseGeocodeLocation(manager.location!, completionHandler: {(placemarks, error)->Void in
+            
             if (error != nil) {
                 print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
                 return
@@ -275,7 +375,10 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             
             if (placemarks?.count)! > 0 {
                 let pm = (placemarks?[0])! as CLPlacemark
+                manager.stopUpdatingLocation()
+                //if (!self.already_called) {
                 self.displayLocationInfo(placemark: pm)
+                //}
             } else {
                 print("Problem with the data received from geocoder")
             }
@@ -284,12 +387,59 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     // display location info
     func displayLocationInfo(placemark: CLPlacemark?) {
+        
+        
         if (placemark != nil) {
             //stop updating location to save battery life
-            manager.stopUpdatingLocation()
+            //manager.stopUpdatingLocation()
             self.curCity = placemark?.locality
             self.curStateProvinceRegion = placemark?.administrativeArea
             self.curCountry = placemark?.country
+            
+            
+            if curLocationFound && !self.already_called {
+                
+                self.already_called = true
+                
+                let mySQLDB = RemoteMySQL()
+                mySQLDB.getCountries(callback: { resultStruct in
+                    if (resultStruct.size == -1) {
+                        print("error found")
+                    } else {
+                        self.countryField.fadeIn()
+                        self.countries = resultStruct.countries
+                    }
+                })
+                
+                if countries.contains(self.curCountry!) {
+                    
+                    self.country_is_selected = countries.index(of: self.curCountry!)!
+                    donePicker_country(nil)
+                    
+                    usleep(useconds_t(700000))
+                    self.countryPicker.selectRow(country_is_selected, inComponent: 0, animated: false)
+                    
+                    if (statesDictionary[self.curStateProvinceRegion!] != nil){
+                        self.curStateProvinceRegion = statesDictionary[self.curStateProvinceRegion!]
+                    }
+                    
+                    if states.contains(self.curStateProvinceRegion!) {
+                        self.state_is_selected = states.index(of: self.curStateProvinceRegion!)!
+                        donePicker_state(nil)
+                        
+                        usleep(useconds_t(500000))
+                        self.statePicker.selectRow(state_is_selected, inComponent: 0, animated: false)
+                        
+                        if cities.contains(self.curCity!) {
+                            self.city_is_selected = cities.index(of: self.curCity!)!
+                            donePicker_city(nil)
+                            self.cityPicker.selectRow(city_is_selected, inComponent: 0, animated: false)
+                        }
+            
+                    }
+                }
+                
+            }
             
             // set flag to true only if all necessary info is found
             if (placemark?.locality != nil && placemark?.administrativeArea != nil && placemark?.country != nil) {
@@ -303,6 +453,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         print("Error while updating location " + error.localizedDescription)
     }
     
+    
     // returns the number of 'columns' to display.
     func numberOfComponents(in pickerView: UIPickerView) -> Int{
         return 1
@@ -311,30 +462,29 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     // returns the # of rows in each component..
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
         
-        if locationField.isFirstResponder{
-            selectedRow_location = 0
-            return locations.count
+        if pickerView.tag == 0 {
+            return countries.count
         }
-        else if stateField.isFirstResponder {
-            selectedRow_state = 0
+        else if pickerView.tag == 1 {
             return states.count
         }
-        else if cityField.isFirstResponder {
-            selectedRow_city = 0
+        else if pickerView.tag == 2 {
             return cities.count
         }
         return 0
     }
     
+    
+    // places the data into the picker
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         
-        if locationField.isFirstResponder{
-            return locations[row]
+        if pickerView.tag == 0 {
+            return countries[row]
         }
-        else if stateField.isFirstResponder {
+        else if pickerView.tag == 1 {
             return states[row]
         }
-        else if cityField.isFirstResponder {
+        else if pickerView.tag == 2 {
             return cities[row]
         }
         else {
@@ -342,103 +492,105 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         }
     }
     
+    // displays it in the label
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
-        if locationField.isFirstResponder{
-            selectedRow_location = row
+        if pickerView.tag == 0 {
+            country_is_selected = row
+            
+//            state_is_selected = -1
+//            city_is_selected = -1
+            
+//            stateField.fadeOut()
+//            cityField.fadeOut()
+//            download_button.isHidden = true
+//            
+//            self.statePicker.reloadAllComponents()
+//            self.stateField.text = ""
+//            self.cityPicker.reloadAllComponents()
+//            self.cityField.text = ""
         }
-        else if stateField.isFirstResponder {
-            selectedRow_state = row
+        else if pickerView.tag == 1 {
+            state_is_selected = row
+            
+//            city_is_selected = -1
+//            
+//            cityField.fadeOut()
+//            download_button.isHidden = true
+//            
+//            self.cityPicker.reloadAllComponents()
+//            self.cityField.text = ""
         }
-        else if cityField.isFirstResponder {
-            selectedRow_city = row
+        else if pickerView.tag == 2 {
+            city_is_selected = row
         }
     }
+
     
-    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-        
-        var titleData = ""
-        
-        if locationField.isFirstResponder{
-            titleData = locations[row]
-        }
-        else if stateField.isFirstResponder {
-            titleData = states[row]
-        }
-        else if cityField.isFirstResponder {
-            titleData = cities[row]
-        }
-        
-        let myTitle = NSAttributedString(string: titleData, attributes: [NSFontAttributeName:UIFont(name: "Georgia", size: 15.0)!,NSForegroundColorAttributeName:UIColor.blue])
-        return myTitle
-    }
-    
-    func donePicker(_ sender: UIBarButtonItem){
+    func donePicker_country(_ sender: AnyObject? ){
         self.view.endEditing(true)
         
-        if(selectedRow_location < locations.count) {
-            let opt = locations[selectedRow_location]
-            if(self.locationField.text != "" && opt != self.locationField.text){
-                optionChanged(textfield: 1)
-                selectedRow_state = -1
-            }
-            self.locationField.text = opt
-        }
-        if(selectedRow_state >= 0 && selectedRow_state < states.count){
-            let opt = states[selectedRow_state]
-            if(self.stateField.text != "" && opt != self.stateField.text){
-                optionChanged(textfield: 2)
-                selectedRow_city = -1
-            }
-            self.stateField.text = opt
-        }
-        if(selectedRow_city >= 0 && selectedRow_city < cities.count){
-            self.cityField.text = cities[selectedRow_city]
-        }
-        
-        
-        if(stateField.text == "" && locationField.text != ""){
+        if country_is_selected >= 0 {
+            self.countryField.text = countries[country_is_selected]
+            
             var mySQLDB = RemoteMySQL()
-            var fade_city = false
-            mySQLDB.getStates(country: locationField.text, callback: { resultStruct in
+            mySQLDB.getStates(country: countryField.text, callback: { resultStruct in
                 self.states = resultStruct.states
             })
+            
+            state_is_selected = 0
+            city_is_selected = -1
+            
+            cityField.fadeOut()
+            download_button.isHidden = true
+            
+            self.statePicker.reloadAllComponents()
+            self.stateField.text = ""
+            self.cityPicker.reloadAllComponents()
+            self.cityField.text = ""
+            
             self.stateField.fadeIn()
         }
-        else if(cityField.text == "" && stateField.text != ""){
+        
+    }
+    
+    func donePicker_state(_ sender: AnyObject? ){
+        self.view.endEditing(true)
+        
+        if state_is_selected >= 0 {
+            self.stateField.text = states[state_is_selected]
+            
             var mySQLDB = RemoteMySQL()
-            mySQLDB.getCities(country: locationField.text, state: stateField.text, callback: { resultStruct in
+            mySQLDB.getCities(country: countryField.text, state: stateField.text, callback: { resultStruct in
                 self.cities = resultStruct.cities
             })
+            
+            city_is_selected = 0
+            
+            download_button.isHidden = true
+            
+            self.cityPicker.reloadAllComponents()
+            self.cityField.text = ""
+            
             self.cityField.fadeIn()
         }
+    }
+    
+    func donePicker_city(_ sender: AnyObject? ){
+        self.view.endEditing(true)
         
-        self.locationPicker.selectRow(0, inComponent: 0, animated: false)
+        if city_is_selected >= 0 {
+            self.cityField.text = cities[city_is_selected]
+        }
         
-        if(locationField.text != "" && stateField.text != "" && cityField.text != ""){
+        if(self.countryField.text != "" && self.stateField.text != "" && self.cityField.text != ""){
             download_button.isHidden = false
         }
         else {
             download_button.isHidden = true
         }
     }
-    
-    func optionChanged(textfield: Int){
-        if(textfield == 1){
-            self.cityField.text = ""
-            cities.removeAll()
-            self.cityField.fadeOut()
-            
-            self.stateField.text = ""
-            states.removeAll()
-        }
-        else if(textfield == 2){
-            self.cityField.text = ""
-            cities.removeAll()
-        }
-        
-    }
-    
+   
     func cancelPicker(_ sender: UIBarButtonItem){
         self.view.endEditing(true)
     }
