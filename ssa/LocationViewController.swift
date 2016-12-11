@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import Darwin
 
 class LocationViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CLLocationManagerDelegate {
     
@@ -112,7 +113,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 "JOIN locations l1 ON t1.location = l1.lid " +
                 "WHERE l1.city = ? " +
                     "AND l1.state_province_region = ? " +
-                    "AND l1.country = ?)", parameters:[cityField.text, stateField.text, locationField.text])
+                    "AND l1.country = ?)", parameters:[cityField.text, stateField.text, countryField.text])
             
             // Remove descriptions from local DB for city to be updated
             db.query(sql:
@@ -124,7 +125,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                 "JOIN locations l1 ON d1.lid = l1.lid " +
                 "WHERE l1.city = ? " +
                     "AND l1.state_province_region = ? " +
-                    "AND l1.country = ?)", parameters:[cityField.text, stateField.text, locationField.text])
+                    "AND l1.country = ?)", parameters:[cityField.text, stateField.text, countryField.text])
             
             // Remove locations from local DB for city to be updated
             db.query(sql:
@@ -132,7 +133,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             "FROM locations l " +
             "WHERE l.city = ?" +
                 "AND l.state_province_region = ? " +
-                "AND l.country = ?", parameters:[cityField.text, stateField.text, locationField.text])
+                "AND l.country = ?", parameters:[cityField.text, stateField.text, countryField.text])
             
             // Query database for info
             var mySQLDB = RemoteMySQL()
@@ -267,10 +268,12 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     var state_is_selected = -1;
     var city_is_selected = -1;
     
+    var already_called = false;
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        already_called = false
         download_button.isHidden = true
         
         // setup GPS location manager
@@ -360,6 +363,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         })
     }
     
+    
     // handle updates to user's location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         CLGeocoder().reverseGeocodeLocation(manager.location!, completionHandler: {(placemarks, error)->Void in
@@ -371,7 +375,10 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             
             if (placemarks?.count)! > 0 {
                 let pm = (placemarks?[0])! as CLPlacemark
+                manager.stopUpdatingLocation()
+                //if (!self.already_called) {
                 self.displayLocationInfo(placemark: pm)
+                //}
             } else {
                 print("Problem with the data received from geocoder")
             }
@@ -381,15 +388,18 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     // display location info
     func displayLocationInfo(placemark: CLPlacemark?) {
         
+        
         if (placemark != nil) {
             //stop updating location to save battery life
-            manager.stopUpdatingLocation()
+            //manager.stopUpdatingLocation()
             self.curCity = placemark?.locality
             self.curStateProvinceRegion = placemark?.administrativeArea
             self.curCountry = placemark?.country
             
             
-            if curLocationFound {
+            if curLocationFound && !self.already_called {
+                
+                self.already_called = true
                 
                 let mySQLDB = RemoteMySQL()
                 mySQLDB.getCountries(callback: { resultStruct in
@@ -401,17 +411,33 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                     }
                 })
                 
-                if countries.contains(curCountry!) {
-                    mySQLDB.getStates(country: countryField.text, callback: { resultStruct in
-                        self.states = resultStruct.states
+                if countries.contains(self.curCountry!) {
                     
-                    })
-                    self.countryField.text = self.curCountry!
+                    self.country_is_selected = countries.index(of: self.curCountry!)!
+                    donePicker_country(nil)
+                    //self.countryPicker.selectedRow(inComponent: country_is_selected)
                     
-                    state_is_selected = 0
-                    self.stateField.fadeIn()
+                    usleep(useconds_t(350000))
+                    self.countryPicker.selectedRow(inComponent: country_is_selected)
+                    
+                    if (statesDictionary[self.curStateProvinceRegion!] != nil){
+                        self.curStateProvinceRegion = statesDictionary[self.curStateProvinceRegion!]
+                    }
+                    
+                    if states.contains(self.curStateProvinceRegion!) {
+                        self.state_is_selected = states.index(of: self.curStateProvinceRegion!)!
+                        donePicker_state(nil)
+                        
+                        usleep(useconds_t(350000))
+                        self.statePicker.selectedRow(inComponent: state_is_selected)
+                        
+                        if cities.contains(self.curCity!) {
+                            self.city_is_selected = cities.index(of: self.curCity!)!
+                            donePicker_city(nil)
+                        }
+            
+                    }
                 }
-                
                 
             }
             
@@ -501,7 +527,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     }
 
     
-    func donePicker_country(_ sender: UIBarButtonItem){
+    func donePicker_country(_ sender: AnyObject? ){
         self.view.endEditing(true)
         
         if country_is_selected >= 0 {
@@ -528,7 +554,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         
     }
     
-    func donePicker_state(_ sender: UIBarButtonItem){
+    func donePicker_state(_ sender: AnyObject? ){
         self.view.endEditing(true)
         
         if state_is_selected >= 0 {
@@ -550,7 +576,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         }
     }
     
-    func donePicker_city(_ sender: UIBarButtonItem){
+    func donePicker_city(_ sender: AnyObject? ){
         self.view.endEditing(true)
         
         if city_is_selected >= 0 {

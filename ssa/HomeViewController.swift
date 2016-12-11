@@ -15,9 +15,14 @@ class HomeViewController: UIViewController,  UgiInventoryDelegate {
     @IBAction func handleLongPress(_ sender: UILongPressGestureRecognizer) {
         let utterance = AVSpeechUtterance(string: "swipe right to download r f i d tags or swipe left to start scanning")
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.volume = 2
         
+        try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
         let synthesizer = AVSpeechSynthesizer()
         synthesizer.speak(utterance)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+            try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.none)
+        })
     }
     
     override func viewDidLoad() {
