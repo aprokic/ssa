@@ -9,12 +9,26 @@
 import UIKit
 import CoreLocation
 import Darwin
+import AVFoundation
 
 class LocationViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CLLocationManagerDelegate {
     
     var countries: [String] = []
     var states: [String] = []
     var cities: [String] = []
+    
+    func speak(text: String){
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.volume = 2
+        
+        try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
+        let synthesizer = AVSpeechSynthesizer()
+        synthesizer.speak(utterance)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+            try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.none)
+        })
+    }
     
     var statesDictionary = [ "AK" : "Alaska",
                               "AL" : "Alabama",
@@ -218,6 +232,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                         if(tagInfo.size == -1) {
                             DispatchQueue.main.async(execute: {
                                 self.alert_message.text = "Failed!"
+                                self.speak(text: "download failed")
                                 self.alert_message.textColor = UIColor.red
                             })
                             return
@@ -225,6 +240,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                         else if (tagInfo.size == 0){
                             DispatchQueue.main.async(execute: {
                                 self.alert_message.text = "Nothing Found."
+                                self.speak(text: "nothing found")
                                 self.alert_message.textColor = UIColor.red
                             })
                             return
@@ -247,6 +263,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                         
                         DispatchQueue.main.async(execute: {
                             self.alert_message.text = "Success!"
+                            self.speak(text: "download success")
                             self.alert_message.textColor = UIColor.green
                         })
                         
@@ -272,6 +289,8 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        speak(text: "You are on download screen")
         
         already_called = false
         download_button.isHidden = true
@@ -462,12 +481,18 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
         
         if pickerView.tag == 0 {
+            speak(text: "Country Wheel")
+            speak(text: countries[country_is_selected]) // To read out the very first entry
             return countries.count
         }
         else if pickerView.tag == 1 {
+            speak(text: "State Wheel")
+            speak(text: states[state_is_selected]) // To read out the very first entry
             return states.count
         }
         else if pickerView.tag == 2 {
+            speak(text: "City Wheel")
+            speak(text: cities[city_is_selected]) // To read out the very first entry
             return cities.count
         }
         return 0
@@ -495,32 +520,16 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
         if pickerView.tag == 0 {
+            speak(text: countries[country_is_selected])
             country_is_selected = row
-            
-//            state_is_selected = -1
-//            city_is_selected = -1
-            
-//            stateField.fadeOut()
-//            cityField.fadeOut()
-//            download_button.isHidden = true
-//            
-//            self.statePicker.reloadAllComponents()
-//            self.stateField.text = ""
-//            self.cityPicker.reloadAllComponents()
-//            self.cityField.text = ""
         }
         else if pickerView.tag == 1 {
+            speak(text: states[state_is_selected])
             state_is_selected = row
             
-//            city_is_selected = -1
-//            
-//            cityField.fadeOut()
-//            download_button.isHidden = true
-//            
-//            self.cityPicker.reloadAllComponents()
-//            self.cityField.text = ""
         }
         else if pickerView.tag == 2 {
+            speak(text: cities[city_is_selected])
             city_is_selected = row
         }
     }
@@ -529,8 +538,9 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     func donePicker_country(_ sender: AnyObject? ){
         self.view.endEditing(true)
         
-        if country_is_selected >= 0 {
+        if country_is_selected >= 0 && countries.count > 0 {
             self.countryField.text = countries[country_is_selected]
+            speak(text: countries[country_is_selected] + " is selected")
             
             var mySQLDB = RemoteMySQL()
             mySQLDB.getStates(country: countryField.text, callback: { resultStruct in
@@ -551,13 +561,15 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             self.stateField.fadeIn()
         }
         
+        
     }
     
     func donePicker_state(_ sender: AnyObject? ){
         self.view.endEditing(true)
         
-        if state_is_selected >= 0 {
+        if state_is_selected >= 0 && states.count > 0 {
             self.stateField.text = states[state_is_selected]
+            speak(text: states[state_is_selected] + " is selected")
             
             var mySQLDB = RemoteMySQL()
             mySQLDB.getCities(country: countryField.text, state: stateField.text, callback: { resultStruct in
@@ -578,8 +590,9 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     func donePicker_city(_ sender: AnyObject? ){
         self.view.endEditing(true)
         
-        if city_is_selected >= 0 {
+        if city_is_selected >= 0 && cities.count > 0 {
             self.cityField.text = cities[city_is_selected]
+            speak(text: cities[city_is_selected] + " is selected")
         }
         
         if(self.countryField.text != "" && self.stateField.text != "" && self.cityField.text != ""){
@@ -591,6 +604,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     }
    
     func cancelPicker(_ sender: UIBarButtonItem){
+        speak(text: "cancelled")
         self.view.endEditing(true)
     }
     
