@@ -69,7 +69,7 @@ struct ScanCity {
 }
 
 class RemoteMySQL {
-    let SERVER = "http://35.1.239.55"
+    let SERVER = "http://35.2.158.134"
     
     func getCountries(callback: @escaping (CountryInfo) -> ()) {
         let URL_LIST_COUNTRIES = SERVER + "/rfid/api/listcountries.php"
@@ -490,7 +490,7 @@ class RemoteMySQL {
         task.resume()
     }
 
-    func getCount(type: String?, location: String?, description: String?, reserved: String?, callback: @escaping (ScanCity)->()) {
+    func getCount(type: String?, location: String?, description: String?, reserved: String?, callback: @escaping (Int)->()) {
         
         let parameterString = "?type=" + type! + "&location=" + location! + "&description=" + description! + "&reserved=" + reserved!
         let tempURL = SERVER + "/rfid/api/scantag.php\(parameterString)"
