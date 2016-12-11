@@ -489,4 +489,53 @@ class RemoteMySQL {
         //executing the task
         task.resume()
     }
+
+    func getCount(type: String?, location: String?, description: String?, reserved: String?, callback: @escaping (ScanCity)->()) {
+        
+        let parameterString = "?type=" + type! + "&location=" + location! + "&description=" + description! + "&reserved=" + reserved!
+        let tempURL = SERVER + "/rfid/api/scantag.php\(parameterString)"
+        let encodedURL = tempURL.addingPercentEncoding( withAllowedCharacters: .urlQueryAllowed)
+        let requestURL = NSURL(string: encodedURL!)
+        let request = NSMutableURLRequest(url: requestURL! as URL)
+        request.httpMethod = "GET"
+        
+        var size = -1
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+            data, response, error in
+            
+            if error != nil {
+                print("error is \(error)")
+                size = -1;
+                callback(resultArr);
+                return;
+            }
+            
+            do {
+                //converting resonse to NSDictionary
+                let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+                
+                //parsing the json
+                if let parseJSON = myJSON {
+                    
+                    //getting the json response
+                    if let subArray = parseJSON["0"] as? [String: AnyObject] {
+                        size = subArray["size"] as! Int
+                    }
+                    
+                    //returning the response
+                    callback(resultArr)
+                }
+            } catch {
+                print(error)
+                resultArr.size = -1;
+                callback(resultArr);
+                return;
+            }
+        }
+        //executing the task
+        task.resume()
+    }
+}
+
 }
