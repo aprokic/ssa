@@ -537,5 +537,3 @@ class RemoteMySQL {
         task.resume()
     }
 }
-
-}
