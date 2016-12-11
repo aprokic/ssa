@@ -415,10 +415,9 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                     
                     self.country_is_selected = countries.index(of: self.curCountry!)!
                     donePicker_country(nil)
-                    //self.countryPicker.selectedRow(inComponent: country_is_selected)
                     
-                    usleep(useconds_t(350000))
-                    self.countryPicker.selectedRow(inComponent: country_is_selected)
+                    usleep(useconds_t(700000))
+                    self.countryPicker.selectRow(country_is_selected, inComponent: 0, animated: false)
                     
                     if (statesDictionary[self.curStateProvinceRegion!] != nil){
                         self.curStateProvinceRegion = statesDictionary[self.curStateProvinceRegion!]
@@ -428,12 +427,13 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                         self.state_is_selected = states.index(of: self.curStateProvinceRegion!)!
                         donePicker_state(nil)
                         
-                        usleep(useconds_t(350000))
-                        self.statePicker.selectedRow(inComponent: state_is_selected)
+                        usleep(useconds_t(500000))
+                        self.statePicker.selectRow(state_is_selected, inComponent: 0, animated: false)
                         
                         if cities.contains(self.curCity!) {
                             self.city_is_selected = cities.index(of: self.curCity!)!
                             donePicker_city(nil)
+                            self.cityPicker.selectRow(city_is_selected, inComponent: 0, animated: false)
                         }
             
                     }
