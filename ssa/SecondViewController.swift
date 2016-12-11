@@ -64,9 +64,12 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
                 try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
                 self.speechSynthesizer.speak(descriptionUtter)
                 //allow time for description to finish asynchronously before returning control to reader
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+                DispatchQueue.global().async {
+                    while (self.speechSynthesizer.isSpeaking) {
+                        // do nothing while speaking
+                    }
                     try! self.session.overrideOutputAudioPort(AVAudioSessionPortOverride.none)
-                })
+                }
             }
         }
     }
