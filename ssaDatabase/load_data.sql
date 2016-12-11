@@ -16,8 +16,8 @@ insert into descriptions values ('000000001', '00000006', 'BBB Main Staircase 2,
 insert into descriptions values ('000000001', '00000007', 'BBB Elevators', NULL);
 insert into descriptions values ('000000001', '00000008', 'Short 20 foot Hallway containing Restrooms and Drinking Fountain', NULL);
 insert into descriptions values ('000000001', '00000009', 'Drinking Fountain and Water Refill Station', NULL);
-insert into descriptions values ('000000001', '0000000A', 'Men's Restroom', NULL);
-insert into descriptions values ('000000001', '0000000B', 'Women's Restroom', NULL);
+insert into descriptions values ('000000001', '0000000A', 'Mens Restroom', NULL);
+insert into descriptions values ('000000001', '0000000B', 'Womens Restroom', NULL);
 insert into descriptions values ('000000002', '00000001', 'DOW 1010 Entrance 1', NULL);
 insert into descriptions values ('000000002', '00000002', 'DOW 1010 Entrance 2', NULL);
 insert into descriptions values ('000000002', '00000003', 'DOW 1006 Entrance 1', NULL);
