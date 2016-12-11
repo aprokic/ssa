@@ -507,7 +507,7 @@ class RemoteMySQL {
             if error != nil {
                 print("error is \(error)")
                 size = -1;
-                callback(resultArr);
+                callback(size);
                 return;
             }
             
@@ -524,12 +524,12 @@ class RemoteMySQL {
                     }
                     
                     //returning the response
-                    callback(resultArr)
+                    callback(size)
                 }
             } catch {
                 print(error)
-                resultArr.size = -1;
-                callback(resultArr);
+                size = -1;
+                callback(size);
                 return;
             }
         }
