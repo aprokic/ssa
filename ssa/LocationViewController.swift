@@ -17,17 +17,31 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     var states: [String] = []
     var cities: [String] = []
     
+    let synthesizer = AVSpeechSynthesizer()
+    
     func speak(text: String){
+        synthesizer.stopSpeaking(at: AVSpeechBoundary.immediate)
+        
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
         utterance.volume = 2
+        utterance.rate = 0.55
         
         try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
-        let synthesizer = AVSpeechSynthesizer()
+        
+        
+        var session = AVAudioSession.sharedInstance()
+        
+        // Output Audio and Override Route
+        try! session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
         synthesizer.speak(utterance)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
-            try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.none)
-        })
+        //allow time for phrase to finish asynchronously
+        DispatchQueue.global().async {
+            while (self.synthesizer.isSpeaking) {
+                // do nothing while speaking
+            }
+            try! session.overrideOutputAudioPort(AVAudioSessionPortOverride.none)
+        }
     }
     
     var statesDictionary = [ "AK" : "Alaska",
@@ -187,6 +201,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                     if(descInfo.size == -1) {
                         DispatchQueue.main.async(execute: {
                             self.alert_message.text = "Failed!"
+                            self.speak(text: "failed")
                             self.alert_message.textColor = UIColor.red
                         })
                         return
@@ -194,6 +209,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
                     else if (descInfo.size == 0){
                         DispatchQueue.main.async(execute: {
                             self.alert_message.text = "Nothing Found."
+                            self.speak(text: "nothing found")
                             self.alert_message.textColor = UIColor.red
                         })
                         return
@@ -480,19 +496,15 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     // returns the # of rows in each component..
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int{
         
+        self.alert_message.text = ""
+        
         if pickerView.tag == 0 {
-            speak(text: "Country Wheel")
-            speak(text: countries[country_is_selected]) // To read out the very first entry
             return countries.count
         }
         else if pickerView.tag == 1 {
-            speak(text: "State Wheel")
-            speak(text: states[state_is_selected]) // To read out the very first entry
             return states.count
         }
         else if pickerView.tag == 2 {
-            speak(text: "City Wheel")
-            speak(text: cities[city_is_selected]) // To read out the very first entry
             return cities.count
         }
         return 0
@@ -503,12 +515,15 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         
         if pickerView.tag == 0 {
+             speak(text: "Country Wheel -- " +  countries[country_is_selected])
             return countries[row]
         }
         else if pickerView.tag == 1 {
+            speak(text: "State Wheel -- " + states[state_is_selected])
             return states[row]
         }
         else if pickerView.tag == 2 {
+            speak(text: "City Wheel -- " + cities[city_is_selected])
             return cities[row]
         }
         else {
@@ -520,16 +535,16 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
         if pickerView.tag == 0 {
-            speak(text: countries[country_is_selected])
+            speak(text: countries[row])
             country_is_selected = row
         }
         else if pickerView.tag == 1 {
-            speak(text: states[state_is_selected])
+            speak(text: states[row])
             state_is_selected = row
             
         }
         else if pickerView.tag == 2 {
-            speak(text: cities[city_is_selected])
+            speak(text: cities[row])
             city_is_selected = row
         }
     }
@@ -592,7 +607,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         
         if city_is_selected >= 0 && cities.count > 0 {
             self.cityField.text = cities[city_is_selected]
-            speak(text: cities[city_is_selected] + " is selected")
+            speak(text: cities[city_is_selected] + " is selected -- " + "press the download button at the bottom")
         }
         
         if(self.countryField.text != "" && self.stateField.text != "" && self.cityField.text != ""){

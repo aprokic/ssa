@@ -11,11 +11,12 @@ import AVFoundation
 
 class HomeViewController: UIViewController,  UgiInventoryDelegate {
     
-  
-    @IBAction func handleLongPress(_ sender: UILongPressGestureRecognizer) {
-        let utterance = AVSpeechUtterance(string: "swipe right to download r f i d tags or swipe left to start scanning")
+    func speak(text: String) {
+        
+        let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
         utterance.volume = 2
+        utterance.rate = 0.55
         
         try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
         let synthesizer = AVSpeechSynthesizer()
@@ -25,8 +26,13 @@ class HomeViewController: UIViewController,  UgiInventoryDelegate {
         })
     }
     
+    @IBAction func handleLongPress(_ sender: UILongPressGestureRecognizer) {
+        speak(text: "swipe right to download r f i d tags or swipe left to start scanning")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        speak(text: "Home Screen")
         
         let inventory: UgiInventory? = Ugi.singleton().activeInventory
         if (inventory != nil){
