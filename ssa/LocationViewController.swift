@@ -490,6 +490,15 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     // returns the number of 'columns' to display.
     func numberOfComponents(in pickerView: UIPickerView) -> Int{
+        if pickerView.tag == 0 && country_is_selected >= 0 && countries.count > 0{
+            speak(text: "Country Wheel -- " +  countries[country_is_selected])
+        }
+        else if pickerView.tag == 1 && state_is_selected >= 0 && states.count > 0 {
+            speak(text: "State Wheel -- " + states[state_is_selected])
+        }
+        else if pickerView.tag == 2 && city_is_selected >= 0 && cities.count > 0 {
+            speak(text: "City Wheel -- " + cities[city_is_selected])
+        }
         return 1
     }
     
@@ -515,15 +524,15 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         
         if pickerView.tag == 0 {
-             speak(text: "Country Wheel -- " +  countries[country_is_selected])
+            //speak(text: "Country Wheel -- " +  countries[country_is_selected])
             return countries[row]
         }
         else if pickerView.tag == 1 {
-            speak(text: "State Wheel -- " + states[state_is_selected])
+            //speak(text: "State Wheel -- " + states[state_is_selected])
             return states[row]
         }
         else if pickerView.tag == 2 {
-            speak(text: "City Wheel -- " + cities[city_is_selected])
+            //speak(text: "City Wheel -- " + cities[city_is_selected])
             return cities[row]
         }
         else {
@@ -568,9 +577,9 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             cityField.fadeOut()
             download_button.isHidden = true
             
-            self.statePicker.reloadAllComponents()
+            self.statePicker.selectRow(state_is_selected, inComponent: 0, animated: false)
             self.stateField.text = ""
-            self.cityPicker.reloadAllComponents()
+            //self.cityPicker.selectRow(city_is_selected, inComponent: 0, animated: false)
             self.cityField.text = ""
             
             self.stateField.fadeIn()
@@ -595,7 +604,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             
             download_button.isHidden = true
             
-            self.cityPicker.reloadAllComponents()
+            self.cityPicker.selectRow(city_is_selected, inComponent: 0, animated: false)
             self.cityField.text = ""
             
             self.cityField.fadeIn()
