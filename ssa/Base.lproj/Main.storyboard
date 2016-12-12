@@ -45,6 +45,7 @@
                         <gestureRecognizers/>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="8f1-fH-pxD" appends="YES" id="5z5-Ep-mph"/>
+                            <outletCollection property="gestureRecognizers" destination="4FH-Ac-GB6" appends="YES" id="X01-kL-6pU"/>
                         </connections>
                     </view>
                     <connections>
@@ -58,6 +59,11 @@
                         <segue destination="If8-OR-QF3" kind="show" id="YMw-F0-ReT"/>
                     </connections>
                 </swipeGestureRecognizer>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="4FH-Ac-GB6">
+                    <connections>
+                        <action selector="information_audio:" destination="v4n-82-Sf6" id="v7V-G7-QId"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-1475.625" y="139.43661971830986"/>
         </scene>
@@ -180,6 +186,7 @@
                         <gestureRecognizers/>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="LH5-bI-Wim" appends="YES" id="nm0-ZK-Kcn"/>
+                            <outletCollection property="gestureRecognizers" destination="5vF-9a-8j5" appends="YES" id="fyr-S6-H3m"/>
                         </connections>
                     </view>
                     <connections>
@@ -196,11 +203,16 @@
                         <segue destination="If8-OR-QF3" kind="show" id="hah-fo-E5i"/>
                     </connections>
                 </swipeGestureRecognizer>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="5vF-9a-8j5">
+                    <connections>
+                        <action selector="information_audio:" destination="kRT-2F-4D3" id="hVZ-Bz-m30"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-3110.625" y="138.38028169014083"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="YMw-F0-ReT"/>
+        <segue reference="hah-fo-E5i"/>
     </inferredMetricsTieBreakers>
 </document>

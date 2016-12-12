@@ -97,6 +97,11 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
         })
     }
     
+    @IBAction func information_audio(_ sender: UILongPressGestureRecognizer) {
+        speak(text: String) // Replace the string with the information you would like to give
+    }
+    
+    
     @IBAction func scanner(_ sender: AnyObject?) {
         let inventory: UgiInventory? = Ugi.singleton().activeInventory
         
