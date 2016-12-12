@@ -306,7 +306,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        speak(text: "You are on download screen")
+        speak(text: "download screen")
         
         already_called = false
         download_button.isHidden = true
