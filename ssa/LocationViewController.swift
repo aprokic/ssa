@@ -595,6 +595,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     func donePicker_state(_ sender: AnyObject? ){
         self.view.endEditing(true)
+        wheel_is_open = false
         
         if state_is_selected >= 0 && states.count > 0 {
             self.stateField.text = states[state_is_selected]
