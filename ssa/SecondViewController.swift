@@ -79,6 +79,24 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
         
     }
     
+    var synthesizer = AVSpeechSynthesizer()
+    func speak(text: String) {
+        synthesizer.stopSpeaking(at: AVSpeechBoundary.immediate)
+        
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.volume = 2
+        utterance.rate = 0.55
+        
+        try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
+        synthesizer = AVSpeechSynthesizer()
+        
+        synthesizer.speak(utterance)
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+            try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.none)
+        })
+    }
+    
     @IBAction func scanner(_ sender: AnyObject?) {
         let inventory: UgiInventory? = Ugi.singleton().activeInventory
         
@@ -93,16 +111,19 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
         if scanStopped {
             Ugi.singleton().startInventory(self, with: config)
             sender?.setTitle("SCANNING", for: .normal)
+            speak(text: "scanning")
             self.scanStopped = false
         }
         else if scanPaused {
             inventory!.resumeInventory()
             sender?.setTitle("SCANNING", for: .normal)
+            speak(text: "scanning")
             self.scanPaused = false
         }
         else {
             inventory!.pause()
             sender?.setTitle("PAUSED", for: .normal)
+            speak(text: "paused")
             self.scanPaused = true
         }
 

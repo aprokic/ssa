@@ -27,21 +27,12 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         utterance.volume = 2
         utterance.rate = 0.55
         
+        
         try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
-        
-        
-        var session = AVAudioSession.sharedInstance()
-        
-        // Output Audio and Override Route
-        try! session.overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
         synthesizer.speak(utterance)
-        //allow time for phrase to finish asynchronously
-        DispatchQueue.global().async {
-            while (self.synthesizer.isSpeaking) {
-                // do nothing while speaking
-            }
-            try! session.overrideOutputAudioPort(AVAudioSessionPortOverride.none)
-        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+            try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.none)
+        })
     }
     
     var statesDictionary = [ "AK" : "Alaska",
@@ -529,15 +520,12 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         
         if pickerView.tag == 0 {
-            //speak(text: "Country Wheel -- " +  countries[country_is_selected])
             return countries[row]
         }
         else if pickerView.tag == 1 {
-            //speak(text: "State Wheel -- " + states[state_is_selected])
             return states[row]
         }
         else if pickerView.tag == 2 {
-            //speak(text: "City Wheel -- " + cities[city_is_selected])
             return cities[row]
         }
         else {
