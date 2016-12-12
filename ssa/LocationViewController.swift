@@ -37,7 +37,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     
     @IBAction func information_audio(_ sender: UILongPressGestureRecognizer) {
-        speak(text: <#T##String#>) // Replace the string with the information you would like to give
+        //speak(text: "") // Replace the string with the information you would like to give
     }
     
     

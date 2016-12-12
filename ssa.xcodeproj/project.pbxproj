@@ -266,7 +266,7 @@
 				TargetAttributes = {
 					9FB8C8321DAA912C00AC6A57 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = T52YGY8GH7;
+						DevelopmentTeam = ZRSPS86XZA;
 						ProvisioningStyle = Automatic;
 					};
 					9FB8C8461DAA912C00AC6A57 = {
@@ -503,13 +503,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = T52YGY8GH7;
+				DEVELOPMENT_TEAM = ZRSPS86XZA;
 				INFOPLIST_FILE = ssa/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/..";
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.eecs481.noor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eecs481.ssa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = ../include/UgiSwiftBridgingHeader.h;
 				SWIFT_VERSION = 3.0;
@@ -521,13 +521,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = T52YGY8GH7;
+				DEVELOPMENT_TEAM = ZRSPS86XZA;
 				INFOPLIST_FILE = ssa/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/..";
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.eecs481.noor;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eecs481.ssa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = ../include/UgiSwiftBridgingHeader.h;
 				SWIFT_VERSION = 3.0;
