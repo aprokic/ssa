@@ -493,7 +493,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     // returns the number of 'columns' to display.
     func numberOfComponents(in pickerView: UIPickerView) -> Int{
         
-        wheel_is_open = true
+        self.wheel_is_open = true
         
         if pickerView.tag == 0 && country_is_selected >= 0 && countries.count > 0{
             speak(text: "Country Wheel -- " +  countries[country_is_selected])
@@ -566,7 +566,6 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     func donePicker_country(_ sender: AnyObject? ){
         self.view.endEditing(true)
-        wheel_is_open = false
         
         if country_is_selected >= 0 && countries.count > 0 {
             self.countryField.text = countries[country_is_selected]
@@ -590,13 +589,12 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             
             self.stateField.fadeIn()
         }
-        
+        self.wheel_is_open = false
         
     }
     
     func donePicker_state(_ sender: AnyObject? ){
         self.view.endEditing(true)
-        wheel_is_open = false
         
         if state_is_selected >= 0 && states.count > 0 {
             self.stateField.text = states[state_is_selected]
@@ -616,11 +614,11 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
             
             self.cityField.fadeIn()
         }
+        self.wheel_is_open = false
     }
     
     func donePicker_city(_ sender: AnyObject? ){
         self.view.endEditing(true)
-        wheel_is_open = false
         
         if city_is_selected >= 0 && cities.count > 0 {
             self.cityField.text = cities[city_is_selected]
@@ -633,17 +631,19 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         else {
             download_button.isHidden = true
         }
+        
+        self.wheel_is_open = false
     }
    
     func cancelPicker(_ sender: UIBarButtonItem){
         self.view.endEditing(true)
-        wheel_is_open = false
+        self.wheel_is_open = false
         speak(text: "Wheel Closed")
     }
     
     func closePicker(_ sender: UIBarButtonItem){
         self.view.endEditing(true)
-        if wheel_is_open {
+        if self.wheel_is_open {
             speak(text: "Wheel Closed")
         }
         wheel_is_open = false
