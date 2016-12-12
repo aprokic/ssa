@@ -566,6 +566,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     func donePicker_country(_ sender: AnyObject? ){
         self.view.endEditing(true)
+        wheel_is_open = false
         
         if country_is_selected >= 0 && countries.count > 0 {
             self.countryField.text = countries[country_is_selected]
@@ -619,6 +620,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     func donePicker_city(_ sender: AnyObject? ){
         self.view.endEditing(true)
+        wheel_is_open = false
         
         if city_is_selected >= 0 && cities.count > 0 {
             self.cityField.text = cities[city_is_selected]
