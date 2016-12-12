@@ -92,7 +92,7 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
         synthesizer = AVSpeechSynthesizer()
         
         synthesizer.speak(utterance)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
             try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.none)
         })
     }
