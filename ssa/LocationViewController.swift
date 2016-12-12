@@ -303,6 +303,8 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     var already_called = false;
     
+    var wheel_is_open = false;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -365,7 +367,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         toolBar2.isUserInteractionEnabled = true
         toolBar3.isUserInteractionEnabled = true
         
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LocationViewController.cancelPicker(_:)))
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LocationViewController.closePicker(_:)))
         view.addGestureRecognizer(tap)
         
         self.countryField.inputView = countryPicker
@@ -490,6 +492,9 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     
     // returns the number of 'columns' to display.
     func numberOfComponents(in pickerView: UIPickerView) -> Int{
+        
+        wheel_is_open = true
+        
         if pickerView.tag == 0 && country_is_selected >= 0 && countries.count > 0{
             speak(text: "Country Wheel -- " +  countries[country_is_selected])
         }
@@ -628,8 +633,18 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
     }
    
     func cancelPicker(_ sender: UIBarButtonItem){
-        speak(text: "cancelled")
         self.view.endEditing(true)
+        wheel_is_open = false
+        speak(text: "Wheel Closed")
+    }
+    
+    func closePicker(_ sender: UIBarButtonItem){
+        self.view.endEditing(true)
+        if wheel_is_open {
+            speak(text: "Wheel Closed")
+        }
+        wheel_is_open = false
+        
     }
     
     override func didReceiveMemoryWarning() {
