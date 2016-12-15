@@ -30,7 +30,7 @@ class LocationViewController: UIViewController, UIPickerViewDataSource, UIPicker
         
         try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.speaker)
         synthesizer.speak(utterance)
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10), execute: {
             try! AVAudioSession.sharedInstance().overrideOutputAudioPort(AVAudioSessionPortOverride.none)
         })
     }

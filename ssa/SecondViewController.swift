@@ -116,7 +116,7 @@ class SecondViewController: UIViewController, UgiInventoryDelegate {
         if scanStopped {
             Ugi.singleton().startInventory(self, with: config)
             sender?.setTitle("SCANNING", for: .normal)
-            speak(text: "scanning")
+            //speak(text: "scanning")
             self.scanStopped = false
         }
         else if scanPaused {
